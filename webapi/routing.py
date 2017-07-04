@@ -6,15 +6,12 @@
 # @File    : routing.py
 # @Software: PyCharm
 import json
-from tornado import gen
 from dict2xml import dict2xml
 from json import JSONDecodeError
 from apizen.methods import Method
 from webapi.handler import ApiBaseHandler
-from tornado.web import MissingArgumentError, asynchronous
+from tornado.web import MissingArgumentError
 from apizen.exceptions import ApiException, ApiSysExceptions
-from concurrent.futures import ThreadPoolExecutor
-from tornado.concurrent import run_on_executor
 
 __author__ = 'blackmatrix'
 
