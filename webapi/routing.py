@@ -9,10 +9,10 @@ import json
 from tornado import gen
 from dict2xml import dict2xml
 from json import JSONDecodeError
-from apizen.method import Method
+from apizen.methods import Method
 from webapi.handler import ApiBaseHandler
 from tornado.web import MissingArgumentError, asynchronous
-from apizen.exception import ApiException, ApiSysExceptions
+from apizen.exceptions import ApiException, ApiSysExceptions
 from concurrent.futures import ThreadPoolExecutor
 from tornado.concurrent import run_on_executor
 
@@ -21,9 +21,6 @@ __author__ = 'blackmatrix'
 
 class WebApiRoute(ApiBaseHandler):
 
-    executor = ThreadPoolExecutor(4)
-
-    @run_on_executor
     def handler(self):
 
         result = None
@@ -105,22 +102,22 @@ class WebApiRoute(ApiBaseHandler):
         content_type = self.request.headers['Content-Type'].lower() if 'Content-Type' in self.request.headers else None
         request_args = {key: self.get_argument(key) for key in self.request.arguments}
 
-        if content_type == 'application/json' and self.request.method.lower() == 'post':
+        if content_type == 'application/json' and self.request.method == 'POST':
             body_data = json.loads(self.request.body.decode())
             if body_data and isinstance(body_data, dict):
                 request_args.update(body_data)
             else:
                 raise ApiSysExceptions.invalid_json
 
-        return Method.run(version=self._v, method_name=self._method, request_method=self.request.method, request_params=request_args)
+        api_func, is_format, *_ = Method.get(version=self._v, method_name=self._method, request_method=self.request.method)
 
-    @asynchronous
-    @gen.coroutine
+        # 将请求参数传入接口处理函数并运行
+        resp = Method.run(api_func, request_params=request_args)
+        return resp
+
     def get(self):
         self.handler()
 
-    @asynchronous
-    @gen.coroutine
     def post(self):
         self.handler()
 

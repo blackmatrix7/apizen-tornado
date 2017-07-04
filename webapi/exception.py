@@ -5,7 +5,7 @@
 # @Site    : 
 # @File    : exception.py
 # @Software: PyCharm
-from apizen.exception import ApiBaseExceptions
+from apizen.exceptions import ApiBaseExceptions
 
 
 # API 子系统（业务）层级执行结果，以2000开始
