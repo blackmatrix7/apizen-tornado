@@ -6,7 +6,7 @@
 # @File    : apidemo.py
 # @Software: PyCharm
 from functools import wraps
-from webapi.exception import ApiSubExceptions
+from webapi.exceptions import ApiSubExceptions
 
 __author__ = 'blackmatrix'
 
