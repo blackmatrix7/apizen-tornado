@@ -13,8 +13,6 @@ from apizen.method import Method
 from webapi.handler import ApiBaseHandler
 from tornado.web import MissingArgumentError, asynchronous
 from apizen.exceptions import ApiException, ApiSysExceptions
-from concurrent.futures import ThreadPoolExecutor
-from tornado.concurrent import run_on_executor
 
 __author__ = 'blackmatrix'
 
@@ -115,13 +113,9 @@ class WebApiRoute(ApiBaseHandler):
 
         return result
 
-    @asynchronous
-    @gen.coroutine
     def get(self):
         self.handler()
 
-    @asynchronous
-    @gen.coroutine
     def post(self):
         self.handler()
 
