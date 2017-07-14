@@ -3,7 +3,7 @@
 # @Time    : 2017/5/5 下午8:57
 # @Author  : Matrix
 # @Site    : 
-# @File    : run.py
+# @File    : manage.py
 # @Software: PyCharm
 import tornado.web
 import apizen.version
@@ -23,7 +23,7 @@ def runserver():
     # web api 版本注册
     apizen.version.register(ApiMethodsV10, ApiMethodsV11, ApiMethodsV12)
 
-    application.listen(port=8010)
+    application.listen(port=8080)
     tornado.ioloop.IOLoop.instance().start()
 
 
