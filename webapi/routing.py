@@ -6,7 +6,10 @@
 # @File    : routing.py
 # @Software: PyCharm
 import json
+import tcelery
 import logging
+import tornado.gen
+import tornado.web
 from configs import config
 from tookit.router import route
 from json import JSONDecodeError
@@ -16,6 +19,8 @@ from apizen.method import get_method, run_method
 from apizen.exceptions import ApiSysExceptions, SysException
 
 __author__ = 'matrix'
+
+tcelery.setup_nonblocking_producer()
 
 
 @route(r'/api/router/rest')
@@ -81,6 +86,8 @@ class WebApiRoute(ApiBaseHandler):
         self.set_status(status_code=http_code)
         self.write(retinfo)
 
+    @tornado.web.asynchronous
+    @tornado.gen.coroutine
     def call_api_func(self):
 
         # 接口名称
@@ -122,7 +129,8 @@ class WebApiRoute(ApiBaseHandler):
 
         # 获取接口处理函数，及接口部分配置
         api_func, raw_resp, *_ = get_method(version=self._v, api_method=self._method, http_method=self.request.method)
-        result = run_method(api_func, request_params=request_args)
+        # run_method(api_func, request_params=request_args)
+        result = yield tornado.gen.Task()
         return result
 
     def get(self):

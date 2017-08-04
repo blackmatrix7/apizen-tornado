@@ -5,6 +5,7 @@
 # @Site: https://github.com/blackmatrix7
 # @File: config.py
 # @Software: PyCharm
+import os
 from tookit.cmdline import cmdline
 
 __author__ = 'blackmatrix'
@@ -64,6 +65,17 @@ class BaseConfig(ConfigMixin):
     # Cache
     CACHE_MEMCACHED_SERVERS = ['127.0.0.1:11211']
     CACHE_KEY_PREFIX = 'default'
+
+    # Celery
+    CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL')
+    CELERY_RESULT_BACKEND = CELERY_BROKER_URL
+    CELERY_ACCEPT_CONTENT = ['json']
+    CELERY_REDIRECT_STDOUTS_LEVEL = 'INFO'
+    CELERY_IMPORTS = ('webapi.tasks', )
+    # celery worker 的并发数
+    CELERYD_CONCURRENCY = 3
+    # 默认队列
+    CELERY_DEFAULT_QUEUE = 'celery@apizen.default'
 
 
 # 开发环境配置
