@@ -1,7 +1,7 @@
 # !/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Time: 2017/1/4 10:30
-# Author: Vcan
+# Author: Matrix
 # Site: 
 # File: log.py
 # Software: PyCharm

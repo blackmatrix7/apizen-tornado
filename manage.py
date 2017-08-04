@@ -1,7 +1,7 @@
 # !/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Time: 2017/1/4 10:59
-# Author: Vcan
+# Author: Matrix
 # Site:
 # File: manage.py
 # Software: PyCharm
@@ -88,8 +88,5 @@ if __name__ == '__main__':
 
     parse_command_line()
 
-    # vcan_db.new_engine()
-    # vcan_db.drop_db()
-    # vcan_db.init_db()
     if cmdline.command == 'runserver':
         runserver()

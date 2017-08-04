@@ -34,8 +34,8 @@ class BaseConfig(ConfigMixin):
     HOST = '127.0.0.1'
     PORT = 8011
 
-    SITE_NAME = 'VcanSite'
-    LOGGER_NAME = 'VcanLogger'
+    SITE_NAME = 'ApiZen'
+    LOGGER_NAME = 'ApiZenLogger'
 
     # cookie
     COOKIE_SECRET = '61oETzKXQAGaYdkL5gEmGeJJFuYh7EQnp2XdTP1o/Vo='
