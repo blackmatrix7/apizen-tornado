@@ -5,7 +5,6 @@
 # @Site: https://github.com/blackmatrix7
 # @File: config.py
 # @Software: PyCharm
-import os
 from tookit.cmdline import cmdline
 
 __author__ = 'blackmatrix'
@@ -52,7 +51,7 @@ class BaseConfig(ConfigMixin):
     APIZEN_DATETIME_FMT = '%Y/%m/%d %H:%M:%S'
     APIZEN_RESP_FMT = '{"meta": {"code": {code}, "message": {message}}, "response": {response}}'
 
-    # API ZEN
+    # 日期格式配置
     DATE_FMT = '%Y-%m-%d'
     DATETIME_FMT = '%Y-%m-%d %H:%M:%S'
 
@@ -87,7 +86,7 @@ class TestConfig(BaseConfig):
     TESTING = True
 
     # Cache
-    CACHE_KEY_PREFIX = 'train'
+    CACHE_KEY_PREFIX = 'test'
 
     # Port
     PORT = 8012

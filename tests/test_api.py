@@ -95,7 +95,7 @@ class ApiZenTestCase(unittest.TestCase):
     # 测试错误的参数类型
     def test_error_arg_type(self):
         self.api_method = 'matrix.api.register_user_plus'
-        playload = {'name': 'tom', 'age': 19.1, 'birthday': '2007/12/31'}
+        playload = {'name': 'tom', 'age': 19.1, 'birthday': '2007-12-31'}
         resp = requests.get(self.request_url, params=playload)
         assert resp.status_code == 400
         data = resp.json()

@@ -10,8 +10,8 @@ from configs import config
 from decimal import Decimal
 from tornado.escape import utf8
 from datetime import datetime, date
-from tornado.web import RequestHandler
 from tornado.util import unicode_type
+from tornado.web import RequestHandler
 
 __author__ = 'blackmatrix'
 
@@ -93,7 +93,6 @@ class ApiBaseHandler(SysBaseHandler):
 
     def check_xsrf_cookie(self):
         pass
-
 
 
 if __name__ == '__main__':
