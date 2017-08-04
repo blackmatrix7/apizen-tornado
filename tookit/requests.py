@@ -9,7 +9,7 @@
 __author__ = 'blackmatrix'
 
 
-class AsyncResquests:
+class AsyncRequests:
     pass
 
 
