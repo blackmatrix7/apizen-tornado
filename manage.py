@@ -1,31 +1,95 @@
-#!/usr/bin/env python
+# !/usr/bin/env python
 # -*- coding: utf-8 -*-
-# @Time    : 2017/5/5 下午8:57
-# @Author  : Matrix
-# @Site    : 
-# @File    : manage.py
-# @Software: PyCharm
+# Time: 2017/1/4 10:59
+# Author: Vcan
+# Site:
+# File: manage.py
+# Software: PyCharm
+import time
+import signal
+import socket
+import logging
 import tornado.web
-import apizen.version
-import tornado.ioloop
-from webapi.routing import WebApiRoute
-from webapi.methods import ApiMethodsV10, ApiMethodsV11, ApiMethodsV12
+from configs import config
+from tookit.router import Route
+from tornado.ioloop import IOLoop
+from tookit.cmdline import cmdline
+from bootloader import torconf, cache
+from tornado.httpserver import HTTPServer
+from apizen.manager import ApiZenManager
+from tookit.session import MemcacheSessionStore
+from tornado.options import define, parse_command_line, options
 
-__author__ = 'matrix'
+# 定义tornado options
+define('cmd', default='runserver', metavar='runserver|syncdb|syncnewdb')
+define('port', default=config.get('PORT', 8011), type=int)
+
+
+# ApiZen初始化
+apizen = ApiZenManager(config=config)
+
+
+class Application(tornado.web.Application):
+    def __init__(self):
+
+        self.memcachedb = cache
+
+        self.session_store = MemcacheSessionStore(cache)
+
+        handlers = [
+                       tornado.web.url(r"/style/(.+)", tornado.web.StaticFileHandler,
+                                       dict(path=torconf['style_path']), name='style_path'),
+                       tornado.web.url(r"/static/(.+)", tornado.web.StaticFileHandler,
+                                       dict(path=torconf['static_path']), name='static_path'),
+                       tornado.web.url(r"/upload/(.+)", tornado.web.StaticFileHandler,
+                                       dict(path=torconf['upload_path']), name='upload_path')
+                   ] + Route.routes()
+        tornado.web.Application.__init__(self, handlers, **torconf)
 
 
 def runserver():
 
-    application = tornado.web.Application([
-        (r'/api/router/rest', WebApiRoute),
-    ])
+    logging_root = logging.getLogger('root')
+    http_server = HTTPServer(Application(), xheaders=True)
+    http_server.listen(options.port)
+    loop = IOLoop.instance()
 
-    # web api 版本注册
-    apizen.version.register(ApiMethodsV10, ApiMethodsV11, ApiMethodsV12)
+    def shutdown():
+        logging_root.info('Server stopping ...')
+        http_server.stop()
+        logging_root.info('IOLoop will be terminate in 1 seconds')
+        deadline = time.time() + 1
 
-    application.listen(port=8080)
-    tornado.ioloop.IOLoop.instance().start()
+        def terminate():
+            now = time.time()
 
+            if now < deadline and (loop._callbacks or loop._timeouts):
+                loop.add_timeout(now + 1, terminate)
+            else:
+                loop.stop()
+                logger_root.info('Server shutdown')
+
+        terminate()
+
+    def sig_handler(sig):
+        logging_root.warning('Caught signal:%s', sig)
+        loop.add_callback(shutdown)
+
+    signal.signal(signal.SIGINT, sig_handler)
+    signal.signal(signal.SIGTERM, sig_handler)
+    ip_list = socket.gethostbyname_ex(socket.gethostname())
+    local_ip = ip_list[2][len(ip_list[2]) - 1]
+    logging_root.info('Server running on http://%s:%s' % (local_ip, options.port))
+    loop.start()
 
 if __name__ == '__main__':
-    runserver()
+    logger_root = logging.getLogger('root')
+    logger_root.info("start run web server.")
+
+    parse_command_line()
+
+    # vcan_db.new_engine()
+    # vcan_db.drop_db()
+    # vcan_db.init_db()
+    if cmdline.command == 'runserver':
+        runserver()
