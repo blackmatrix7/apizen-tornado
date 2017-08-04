@@ -37,7 +37,7 @@ class BaseConfig(ConfigMixin):
     LOGGER_NAME = 'ApiZenLogger'
 
     # cookie
-    COOKIE_SECRET = '61oETzKXQAGaYdkL5gEmGeJJFuYh7EQnp2XdTP1o/Vo='
+    COOKIE_SECRET = '@r3K8mktcn*j5T#^M@qWZJ&tVy!9Spjz'
 
     # login
     LOGIN_URL = '/signin'
