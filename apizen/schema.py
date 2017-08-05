@@ -9,7 +9,7 @@ import re
 import json
 import copy
 from decimal import Decimal
-from configs import config
+from config import config
 from json import JSONDecodeError
 from datetime import datetime, date
 from .exceptions import ApiSysExceptions

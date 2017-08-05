@@ -10,7 +10,7 @@ import signal
 import socket
 import logging
 import tornado.web
-from configs import config
+from config import config
 from tookit.router import Route
 from tornado.ioloop import IOLoop
 from tookit.cmdline import cmdline

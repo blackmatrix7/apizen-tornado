@@ -10,7 +10,8 @@ import tcelery
 import logging
 import tornado.gen
 import tornado.web
-from configs import config
+from webapi.tasks import add
+from config import config
 from tookit.router import route
 from json import JSONDecodeError
 from webapi.handler import ApiBaseHandler
@@ -130,7 +131,7 @@ class WebApiRoute(ApiBaseHandler):
         # 获取接口处理函数，及接口部分配置
         api_func, raw_resp, *_ = get_method(version=self._v, api_method=self._method, http_method=self.request.method)
         # run_method(api_func, request_params=request_args)
-        result = yield tornado.gen.Task()
+        result = yield tornado.gen.Task(add.apply_async, args=[1, 3])
         return result
 
     def get(self):

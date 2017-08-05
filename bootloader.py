@@ -1,5 +1,5 @@
 import os
-from configs import config
+from config import config
 from webapi import routing
 from tookit.cache import Cache
 from tookit.initlogs import log_init

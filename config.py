@@ -55,7 +55,6 @@ class BaseConfig(ConfigMixin):
     # 日期格式配置
     DATE_FMT = '%Y-%m-%d'
     DATETIME_FMT = '%Y-%m-%d %H:%M:%S'
-
     # RabbitMQ
     RabbitMQ_HOST = None
     RabbitMQ_PORT = None
@@ -69,7 +68,7 @@ class BaseConfig(ConfigMixin):
     # Celery
     CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL')
     CELERY_RESULT_BACKEND = CELERY_BROKER_URL
-    CELERY_ACCEPT_CONTENT = ['json']
+    CELERY_ACCEPT_CONTENT = ['pickle']
     CELERY_REDIRECT_STDOUTS_LEVEL = 'INFO'
     CELERY_IMPORTS = ('webapi.tasks', )
     # celery worker 的并发数
@@ -128,4 +127,5 @@ configs = {
     'default': devcfg
 }
 
-config = configs[cmdline.config]
+config = default
+# config = configs[cmdline.config]

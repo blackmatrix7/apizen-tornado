@@ -5,8 +5,13 @@
 # @Site : 
 # @File : tasks.py
 # @Software: PyCharm
-
+from runcelery import app
 __author__ = 'blackmatrix'
+
+
+@app.task
+def add(x, y):
+    return x+y
 
 if __name__ == '__main__':
     pass

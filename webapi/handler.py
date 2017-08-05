@@ -6,7 +6,7 @@
 # @File    : handler.py
 # @Software: PyCharm
 import json
-from configs import config
+from config import config
 from decimal import Decimal
 from tornado.escape import utf8
 from datetime import datetime, date
