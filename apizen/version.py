@@ -6,6 +6,8 @@
 # @File    : version.py
 # @Software: PyCharm
 import copy
+from runcelery import app
+from inspect import signature
 
 __author__ = 'blackmatrix'
 
@@ -43,8 +45,7 @@ class _ApiMethodsMeta(type):
                 new_api_methods.update({key: value
                                         for key, value in getattr(super_, 'api_methods').items()
                                         if key not in new_api_methods})
-        from runcelery import app
-        from inspect import signature
+        # 同时创建函数签名，以及celery的异步tasks
         for k, v in new_api_methods.items():
             new_api_methods[k]['sign'] = signature(v['func'])
             new_api_methods[k]['async'] = app.task(v['func'])

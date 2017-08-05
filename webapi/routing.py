@@ -91,7 +91,7 @@ class WebApiRoute(ApiBaseHandler):
     @tornado.gen.coroutine
     def call_api_func(self):
 
-        result = None
+        resp = None
         api_code = 1000
         api_msg = '执行成功'
         http_code = 200
@@ -162,9 +162,10 @@ class WebApiRoute(ApiBaseHandler):
 
             import tornado.gen
             # return api_method(**func_args)
-            result = yield tornado.gen.Task(async_api_func.apply_async, kwargs={**func_args}).result
-            if isinstance(result, Exception) or issubclass(result, Exception):
-                raise result
+            result = yield tornado.gen.Task(async_api_func.apply_async, kwargs={**func_args})
+            resp = result.result
+            if isinstance(resp, Exception) or issubclass(resp, Exception):
+                raise resp
         # 参数缺失异常
         except MissingArgumentError as miss_arg_err:
             # 缺少方法名
@@ -205,7 +206,7 @@ class WebApiRoute(ApiBaseHandler):
                 'code': api_code,
                 'message': api_msg
             },
-            'response': result
+            'response': None
         }
 
         if api_code != 1000:
@@ -214,7 +215,6 @@ class WebApiRoute(ApiBaseHandler):
         self.set_header("Access-Control-Allow-Origin", "*")
         self.set_status(status_code=http_code)
         self.write(retinfo)
-        return result
 
     def get(self):
         self.call_api_func()

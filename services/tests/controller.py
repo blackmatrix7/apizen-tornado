@@ -129,6 +129,11 @@ def is_bool(value: Bool):
     return value
 
 
+def sleep_seconds(seconds=10):
+    import time
+    time.sleep(seconds)
+
+
 class ApiDemo:
 
     def __init__(self):

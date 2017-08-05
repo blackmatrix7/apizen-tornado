@@ -56,7 +56,9 @@ class DemoApiMethods(ApiMethodsBase):
         # 传递任意参数
         'matrix.api.send-kwargs': {'func': demo.send_kwargs},
         # API版本继承
-        'matrix.api.raise-error': {'func': raise_error}
+        'matrix.api.raise-error': {'func': raise_error},
+        # 模拟接口阻塞
+        'matrix.api.sleep': {'func': sleep_seconds}
     }
 
 if __name__ == '__main__':
