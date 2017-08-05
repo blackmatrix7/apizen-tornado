@@ -70,7 +70,7 @@ class BaseConfig(ConfigMixin):
     CELERY_RESULT_BACKEND = CELERY_BROKER_URL
     CELERY_ACCEPT_CONTENT = ['pickle']
     CELERY_REDIRECT_STDOUTS_LEVEL = 'INFO'
-    CELERY_IMPORTS = ('tasks', )
+    CELERY_IMPORTS = ('tasks', 'webapi.methods')
     # celery worker 的并发数
     CELERYD_CONCURRENCY = 3
     # 默认队列
@@ -127,5 +127,5 @@ configs = {
     'default': devcfg
 }
 
-config = default
+config = testcfg
 # config = configs[cmdline.config]

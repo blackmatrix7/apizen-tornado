@@ -43,6 +43,11 @@ class _ApiMethodsMeta(type):
                 new_api_methods.update({key: value
                                         for key, value in getattr(super_, 'api_methods').items()
                                         if key not in new_api_methods})
+        from runcelery import app
+        from inspect import signature
+        for k, v in new_api_methods.items():
+            new_api_methods[k]['sign'] = signature(v['func'])
+            new_api_methods[k]['async'] = app.task(v['func'])
         setattr(new_cls, 'api_methods', new_api_methods)
         del cls
         return new_cls

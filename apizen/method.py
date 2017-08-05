@@ -77,10 +77,14 @@ def get_method(version, api_method, http_method):
 
     _func = methods[api_method].get('func')
 
+    _async = methods[api_method].get('async')
+
+    _sign = methods[api_method].get('sign')
+
     # 解包，检查是否有不统一格式化输出的装饰器，或允许匿名访问情况
     unwrap(_func, stop=check_decorator)
 
-    return _func, raw_resp, allow_anonymous
+    return _func, _sign, _async,  raw_resp, allow_anonymous
 
 
 # 运行接口处理方法，及异常处理
