@@ -1,5 +1,5 @@
 import os
-from config import config
+from config import current_config
 from webapi import routing
 from tookit.cache import Cache
 from tookit.initlogs import log_init
@@ -13,11 +13,11 @@ torconf = {
         'style_path': os.path.join(os.path.dirname(__file__), 'style'),
         'static_path': os.path.join(os.path.dirname(__file__), 'static'),
         'upload_path': os.path.join(os.path.dirname(__file__), 'upload'),
-        'cookie_secret': config.get('COOKIE_SECRET'),
-        'login_url': config.get('LOGIN_URL'),
+        'cookie_secret': current_config.get('COOKIE_SECRET'),
+        'login_url': current_config.get('LOGIN_URL'),
         "xsrf_cookies": True,
         'autoescape': None
     }
 
 # 缓存管理
-cache = Cache(config=config)
+cache = Cache(config=current_config)

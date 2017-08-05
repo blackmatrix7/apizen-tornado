@@ -127,5 +127,5 @@ configs = {
     'default': devcfg
 }
 
-config = testcfg
+current_config = testcfg
 # config = configs[cmdline.config]

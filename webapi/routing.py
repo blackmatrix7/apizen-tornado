@@ -10,13 +10,12 @@ import tcelery
 import logging
 import tornado.gen
 import tornado.web
-from config import config
+from config import current_config
 from tookit.router import route
 from json import JSONDecodeError
+from apizen.method import get_method
 from webapi.handler import ApiBaseHandler
 from tornado.web import MissingArgumentError
-from apizen.method import get_method
-from tasks import async_run_method
 from apizen.exceptions import ApiSysExceptions, SysException
 
 __author__ = 'matrix'
@@ -64,7 +63,7 @@ class WebApiRoute(ApiBaseHandler):
             api_msg = api_ex.err_msg
         # 全局异常
         except Exception as ex:
-            if config.DEBUG is False:
+            if current_config.DEBUG is False:
                 api_ex = ApiSysExceptions.system_error
                 api_code = api_ex.err_code
                 http_code = api_ex.http_code
@@ -193,7 +192,7 @@ class WebApiRoute(ApiBaseHandler):
             api_msg = api_ex.err_msg
         # 全局异常
         except Exception as ex:
-            if config.DEBUG is False:
+            if current_config.DEBUG is False:
                 api_ex = ApiSysExceptions.system_error
                 api_code = api_ex.err_code
                 http_code = api_ex.http_code

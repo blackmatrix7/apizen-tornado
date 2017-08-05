@@ -10,23 +10,24 @@ import signal
 import socket
 import logging
 import tornado.web
-from config import config
+from config import current_config
+from runcelery import app
 from tookit.router import Route
+from apizen import ApiZenManager
 from tornado.ioloop import IOLoop
 from tookit.cmdline import cmdline
 from bootloader import torconf, cache
 from tornado.httpserver import HTTPServer
-from apizen.manager import ApiZenManager
 from tookit.session import MemcacheSessionStore
 from tornado.options import define, parse_command_line, options
 
 # 定义tornado options
 define('cmd', default='runserver', metavar='runserver|syncdb|syncnewdb')
-define('port', default=config.get('PORT', 8011), type=int)
+define('port', default=current_config.get('PORT', 8011), type=int)
 
 
 # ApiZen初始化
-apizen = ApiZenManager(config=config)
+apizen = ApiZenManager.init_app(config=current_config, celery=app)
 
 
 class Application(tornado.web.Application):

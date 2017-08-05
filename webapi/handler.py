@@ -6,7 +6,7 @@
 # @File    : handler.py
 # @Software: PyCharm
 import json
-from config import config
+from config import current_config
 from decimal import Decimal
 from tornado.escape import utf8
 from datetime import datetime, date
@@ -23,9 +23,9 @@ class CustomJSONEncoder(json.JSONEncoder):
     def default(self, obj):
         try:
             if isinstance(obj, datetime):
-                return obj.strftime(config.get('DATETIME_FMT'))
+                return obj.strftime(current_config.get('DATETIME_FMT'))
             elif isinstance(obj, date):
-                return obj.strftime(config.get('DATE_FMT'))
+                return obj.strftime(current_config.get('DATE_FMT'))
             elif isinstance(obj, Decimal):
                 # 不转换为float是为了防止精度丢失
                 return str(obj)

@@ -5,15 +5,11 @@
 # @Site : 
 # @File : runcelery.py
 # @Software: PyCharm
-import config
+from config import current_config
 from celery import Celery
 
 __author__ = 'blackmatrix'
 
-config = config.config
-
-print(config.CELERY_BROKER_URL)
-
-app = Celery('apizen',  broker=config.CELERY_BROKER_URL)
+app = Celery('apizen', broker=current_config.CELERY_BROKER_URL)
 
 app.config_from_object('config.config')
