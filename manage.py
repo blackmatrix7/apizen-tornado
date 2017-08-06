@@ -91,3 +91,5 @@ if __name__ == '__main__':
 
     if cmdline.command == 'runserver':
         runserver()
+    elif cmdline.command == 'celery':
+        app.start(argv=['celery', 'worker', '-l', 'info'])

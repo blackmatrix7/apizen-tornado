@@ -69,7 +69,7 @@ class BaseConfig(ConfigMixin):
     # Celery
     CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL')
     CELERY_RESULT_BACKEND = CELERY_BROKER_URL
-    CELERY_ACCEPT_CONTENT = ['pickle']
+    CELERY_ACCEPT_CONTENT = ['msgpack']
     CELERY_REDIRECT_STDOUTS_LEVEL = 'INFO'
     CELERY_IMPORTS = ('tasks', 'webapi.methods')
     # celery worker 的并发数
