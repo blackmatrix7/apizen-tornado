@@ -69,10 +69,10 @@ class BaseConfig(ConfigMixin):
 
     # Celery
     CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL')
-    CELERY_RESULT_BACKEND = CELERY_BROKER_URL
-    CELERY_ACCEPT_CONTENT = ['msgpack']
-    CELERY_TASK_SERIALIZER = 'msgpack'
-    CELERY_RESULT_SERIALIZER = 'msgpack'
+    CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND')
+    CELERY_ACCEPT_CONTENT = ['json']
+    CELERY_TASK_SERIALIZER = 'json'
+    CELERY_RESULT_SERIALIZER = 'json'
     CELERY_REDIRECT_STDOUTS_LEVEL = 'INFO'
     CELERY_IMPORTS = ('webapi.tasks', 'webapi.methods')
     # celery worker 的并发数
@@ -135,4 +135,4 @@ configs = {
     'default': devcfg
 }
 
-current_config = configs[cmdline.config]
+current_config = configs['prodcfg']
