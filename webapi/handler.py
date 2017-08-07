@@ -53,14 +53,19 @@ class SysBaseHandler(BaseHandler):
 class ApiBaseHandler(SysBaseHandler):
 
     def __init__(self, application, request, **kwargs):
-        self._access_token = None
+        # 请求参数
         self._method = None
-        self._app_key = None
-        self._sign = None
-        self._timestamp = None
         self._v = None
         self._format = 'json'
-        SysBaseHandler.__init__(self, application, request, **kwargs)
+        self.content_type = ''
+        self.request_args = {}
+        self.resp = {}
+        # 返回参数
+        self.api_code = 1000
+        self.api_msg = '执行成功'
+        self.http_code = 200
+
+        super().__init__(application, request, **kwargs)
 
     def write(self, chunk):
         """Writes the given chunk to the output buffer.

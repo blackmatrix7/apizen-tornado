@@ -19,7 +19,7 @@ class ApiZenTestCase(unittest.TestCase):
             host=self.api_host, version=self.api_version,  method=self.api_method)
 
     def setUp(self):
-        self.api_host = 'http://127.0.0.1:8011/api/router/rest'
+        self.api_host = 'http://127.0.0.1:8012/api/router/rest'
         self.api_version = '1.0'
         self.api_method = 'matrix.api.first-api'
 
@@ -292,14 +292,6 @@ class ApiZenTestCase(unittest.TestCase):
         assert data['meta']['message'] == '接口版本已停用'
         # 恢复正常的版本号
         self.api_version = '1.0'
-
-    # 测试错误的api配置
-    def test_error_api_config(self):
-        self.api_method = 'matrix.api.err-api'
-        resp = requests.get(self.request_url)
-        assert resp.status_code == 500
-        data = resp.json()
-        assert data['meta']['message'] == '错误的API配置'
 
     # 测试布尔值类型
     def test_is_bool(self):
