@@ -14,6 +14,7 @@ from tookit.router import route
 from json import JSONDecodeError
 from config import current_config
 from apizen.method import get_method
+from webapi.tasks import async_webapi
 from webapi.handler import ApiBaseHandler
 from tornado.web import MissingArgumentError
 from apizen.exceptions import ApiSysExceptions, SysException
@@ -68,39 +69,40 @@ class WebApiRoute(ApiBaseHandler):
     @tornado.gen.coroutine
     def handler(self):
 
-        # 获取接口处理函数，及接口部分配置
-        api_func, sign,  async_api_func, *_ = get_method(version=self._v, api_method=self._method, http_method=self.request.method)
-
-        # 最终传递给接口处理方法的全部参数
-        func_args = {}
-        # 获取函数方法的参数
-        from inspect import Parameter
-        from apizen.schema import convert
-        api_method_params = sign.parameters
-
-        for k, v in api_method_params.items():
-            if str(v.kind) == 'VAR_POSITIONAL':
-                raise ApiSysExceptions.error_api_config
-            elif str(v.kind) in ('POSITIONAL_OR_KEYWORD', 'KEYWORD_ONLY'):
-                if k not in self.request_args:
-                    if v.default is Parameter.empty:
-                        missing_arguments = ApiSysExceptions.missing_arguments
-                        missing_arguments.err_msg = '{0}：{1}'.format(missing_arguments.err_msg, k)
-                        raise missing_arguments
-                    func_args[k] = convert(k, v.default, v.default, v.annotation)
-                else:
-                    func_args[k] = convert(k, self.request_args.get(k), v.default, v.annotation)
-            elif str(v.kind) == 'VAR_KEYWORD':
-                func_args.update({k: v for k, v in self.request_args.items()
-                                  if k not in api_method_params.keys()})
+        # # 获取接口处理函数，及接口部分配置
+        # api_func, sign,  async_api_func, *_ = get_method(version=self._v, api_method=self._method, http_method=self.request.method)
+        #
+        # # 最终传递给接口处理方法的全部参数
+        # func_args = {}
+        # # 获取函数方法的参数
+        # from inspect import Parameter
+        # from apizen.schema import convert
+        # api_method_params = sign.parameters
+        #
+        # for k, v in api_method_params.items():
+        #     if str(v.kind) == 'VAR_POSITIONAL':
+        #         raise ApiSysExceptions.error_api_config
+        #     elif str(v.kind) in ('POSITIONAL_OR_KEYWORD', 'KEYWORD_ONLY'):
+        #         if k not in self.request_args:
+        #             if v.default is Parameter.empty:
+        #                 missing_arguments = ApiSysExceptions.missing_arguments
+        #                 missing_arguments.err_msg = '{0}：{1}'.format(missing_arguments.err_msg, k)
+        #                 raise missing_arguments
+        #             func_args[k] = convert(k, v.default, v.default, v.annotation)
+        #         else:
+        #             func_args[k] = convert(k, self.request_args.get(k), v.default, v.annotation)
+        #     elif str(v.kind) == 'VAR_KEYWORD':
+        #         func_args.update({k: v for k, v in self.request_args.items()
+        #                           if k not in api_method_params.keys()})
         if current_config.ASYNC is True:
-            import tornado.gen
-            retdata = yield tornado.gen.Task(async_api_func.apply_async, kwargs={**func_args})
+            retdata = yield tornado.gen.Task(async_webapi.apply_async,
+                                             kwargs={'method': self._method, 'v': self._v,
+                                                     'http_method': self.request.method, 'args': self.request_args})
             result = retdata.result
             if isinstance(result, Exception) or issubclass(result.__class__, Exception):
                 raise result
         else:
-            result = api_func(**func_args)
+            result = async_webapi(method=self._method, v=self._v, http_method=self.request.method, args=self.request_args)
 
         self.resp = {
             'meta': {

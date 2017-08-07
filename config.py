@@ -74,7 +74,7 @@ class BaseConfig(ConfigMixin):
     CELERY_TASK_SERIALIZER = 'msgpack'
     CELERY_RESULT_SERIALIZER = 'msgpack'
     CELERY_REDIRECT_STDOUTS_LEVEL = 'INFO'
-    CELERY_IMPORTS = ('tasks', 'webapi.methods')
+    CELERY_IMPORTS = ('webapi.tasks', 'webapi.methods')
     # celery worker 的并发数
     CELERYD_CONCURRENCY = 3
     # 默认队列
@@ -117,6 +117,8 @@ class ProdConfig(BaseConfig):
 
     # Cache
     CACHE_KEY_PREFIX = 'master'
+    # 默认队列
+    CELERY_DEFAULT_QUEUE = 'celery@apizen.prod'
 
     # Port
     PORT = 8013
@@ -133,5 +135,4 @@ configs = {
     'default': devcfg
 }
 
-current_config = testcfg
-# config = configs[cmdline.config]
+current_config = configs[cmdline.config]
