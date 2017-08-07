@@ -6,7 +6,7 @@
 # @File    : routing.py
 # @Software: PyCharm
 import json
-# import tcelery
+import tcelery
 import logging
 import tornado.gen
 import tornado.web
@@ -20,7 +20,7 @@ from apizen.exceptions import ApiSysExceptions, SysException
 
 __author__ = 'matrix'
 
-# tcelery.setup_nonblocking_producer()
+tcelery.setup_nonblocking_producer()
 
 
 @route(r'/api/router/rest')

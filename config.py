@@ -30,7 +30,7 @@ class BaseConfig(ConfigMixin):
 
     DEBUG = True
     TESTING = True
-    ASYNC = False
+    ASYNC = True
 
     HOST = '127.0.0.1'
     PORT = 8011
@@ -71,6 +71,8 @@ class BaseConfig(ConfigMixin):
     CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL')
     CELERY_RESULT_BACKEND = CELERY_BROKER_URL
     CELERY_ACCEPT_CONTENT = ['msgpack']
+    CELERY_TASK_SERIALIZER = 'msgpack'
+    CELERY_RESULT_SERIALIZER = 'msgpack'
     CELERY_REDIRECT_STDOUTS_LEVEL = 'INFO'
     CELERY_IMPORTS = ('tasks', 'webapi.methods')
     # celery worker 的并发数
@@ -97,7 +99,7 @@ class TestConfig(BaseConfig):
 
     DEBUG = False
     TESTING = True
-    ASYNC = False
+    ASYNC = True
 
     # Cache
     CACHE_KEY_PREFIX = 'test'

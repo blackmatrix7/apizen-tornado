@@ -12,8 +12,8 @@ import logging
 import tornado.web
 from runcelery import app
 from tookit.router import Route
-from config import current_config
 from apizen import ApiZenManager
+from config import current_config
 from tornado.ioloop import IOLoop
 from tookit.cmdline import cmdline
 from bootloader import torconf, cache
@@ -91,5 +91,5 @@ if __name__ == '__main__':
 
     if cmdline.command == 'runserver':
         runserver()
-    elif cmdline.command == 'celery':
+    elif cmdline.command == 'runcelery':
         app.start(argv=['celery', 'worker', '-l', 'info'])
