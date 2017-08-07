@@ -5,11 +5,15 @@
 # @Site: https://github.com/blackmatrix7/apizen
 # @File: types.py
 # @Software: PyCharm
+import re
 import json
 import copy
-from datetime import datetime
+from decimal import Decimal
+from configs import config
 from json import JSONDecodeError
+from datetime import datetime, date
 from .exceptions import ApiSysExceptions
+from .config import APIZEN_DATE_FMT, APIZEN_DATETIME_FMT
 
 __author__ = 'blackmatrix'
 
@@ -42,11 +46,13 @@ class TypeMeta(type):
 
 
 class TypeBase(metaclass=TypeMeta):
-    pass
+    @staticmethod
+    def convert(*, value):
+        raise NotImplementedError
 
 
-class _Integer(int, TypeBase):
-    __type__ = 'Integer'
+class TypeInteger(int, TypeBase):
+    typename = 'Integer'
 
     @staticmethod
     def convert(*, value):
@@ -57,23 +63,17 @@ class _Integer(int, TypeBase):
         else:
             raise ValueError
 
-Integer = _Integer()
 
-
-class _String(str, TypeBase):
-    __type__ = 'String'
+class TypeString(str, TypeBase):
+    typename = 'String'
 
     @staticmethod
     def convert(*, value):
-        _value = copy.copy(value)
-        return str(_value)
+        return str(value)
 
 
-String = _String()
-
-
-class _Float(float, TypeBase):
-    __type__ = 'Float'
+class TypeFloat(float, TypeBase):
+    typename = 'Float'
 
     @staticmethod
     def convert(*, value):
@@ -81,11 +81,8 @@ class _Float(float, TypeBase):
         return float(_value)
 
 
-Float = _Float()
-
-
-class _Dict(dict, TypeBase):
-    __type__ = 'Dict'
+class TypeDict(dict, TypeBase):
+    typename = 'Dict'
 
     @staticmethod
     def convert(*, value):
@@ -97,11 +94,8 @@ class _Dict(dict, TypeBase):
             raise ValueError
 
 
-Dict = _Dict()
-
-
-class _List(list, TypeBase):
-    __type__ = 'List'
+class TypeList(list, TypeBase):
+    typename = 'List'
 
     @staticmethod
     def convert(*, value):
@@ -113,20 +107,106 @@ class _List(list, TypeBase):
             raise ValueError
 
 
-List = _List()
-
-
-class DateTime(TypeBase, datetime):
-    __type__ = 'DateTime'
+class TypeDate(date, TypeBase):
+    typename = 'Date'
 
     def convert(self, *, value=None):
         _value = copy.copy(value)
         _value = datetime.strptime(_value, self.format_) if isinstance(_value, str) else _value
         return _value
 
-    def __init__(self, format_='%Y-%m-%d %H:%M:%S'):
-        self.format_ = format_
-        super().__init__()
+    def __init__(self, format_=None):
+        try:
+            self.format_ = format_ or config.get('APIZEN_DATE_FMT', APIZEN_DATE_FMT)
+        except (KeyError, ImportError):
+            self.format_ = APIZEN_DATE_FMT
+        finally:
+            super().__init__()
+
+
+class TypeDatetime(datetime, TypeBase):
+    typename = 'DateTime'
+
+    def convert(self, *, value=None):
+        _value = copy.copy(value)
+        _value = datetime.strptime(_value, self.format_) if isinstance(_value, str) else _value
+        return _value
+
+    def __init__(self, format_=None):
+        try:
+            self.format_ = format_ or config.get('APIZEN_DATETIME_FMT', APIZEN_DATETIME_FMT)
+        except (KeyError, ImportError):
+            self.format_ = APIZEN_DATETIME_FMT
+        finally:
+            super().__init__()
+
+
+class TypeBool(bool, TypeBase):
+
+    typename = 'Bool'
+
+    @staticmethod
+    def convert(*, value=None):
+        _value = str(value).lower()
+        if _value in ('true', 'yes', '是', '0'):
+            _value = True
+        elif _value in ('false', 'no', '否', '1'):
+            _value = False
+        else:
+            _value = value
+        if isinstance(_value, bool):
+            return _value
+        else:
+            raise ValueError
+
+
+class TypeEmail(TypeString):
+    typename = 'Email'
+
+    @staticmethod
+    def convert(*, value):
+        if re.match('^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$', value, flags=0):
+            return value
+        else:
+            raise ValueError
+
+
+class TypeModel(TypeBase):
+
+    def __init__(self, model):
+        self.model = model
+
+    def convert(self, *, value=None):
+        data = json.loads(value) if isinstance(value, str) else value
+        result = self.model(**{key: value for key, value in data.items() if key in self.model.__table__.columns})
+        result.raw_data = data
+        return result
+
+
+class TypeMoney(TypeBase):
+
+    typename = 'Money'
+
+    @staticmethod
+    def convert(*, value):
+        value = Decimal(value)
+        if value >= 0 and value == round(value, 2):
+            return value
+        else:
+            raise ValueError
+
+
+Integer = TypeInteger()
+List = TypeList()
+Money = TypeMoney()
+Bool = TypeBool()
+Float = TypeFloat()
+String = TypeString()
+Dict = TypeDict()
+Date = TypeDate
+Model = TypeModel
+DateTime = TypeDatetime
+Email = TypeEmail
 
 
 def dict2model(data, model):
@@ -143,32 +223,26 @@ def dict2model(data, model):
 
 
 def convert(key, value, default_value, type_hints):
+    # 系统级别 type hints 兼容 （兼顾历史接口代码）
+    _type_hints = {
+        int: Integer,
+        float: Float,
+        str: String,
+        list: List,
+        dict: Dict,
+        datetime: DateTime
+    }.get(type_hints, type_hints)
     try:
         if value != default_value:
-            # 系统级别 type hints 兼容 （兼顾历史接口代码）
-            _type_hints = {
-                int: Integer,
-                float: Float,
-                str: String,
-                list: List,
-                dict: Dict
-            }.get(type_hints, type_hints)
-            instance = type_hints if isinstance(_type_hints, Typed) else type_hints() if issubclass(_type_hints, Typed) else object()
+            instance = _type_hints if isinstance(_type_hints, Typed) else _type_hints() if issubclass(_type_hints, Typed) else object()
             if isinstance(instance, Typed):
                 value = instance.convert(value=value)
-            # elif issubclass(type_hints, db.Model):
-            #     value = dict2model(value, type_hints)
             return value
     except JSONDecodeError:
         raise ApiSysExceptions.invalid_json
     except ValueError:
         api_ex = ApiSysExceptions.error_args_type
-        api_ex.message = '{0}：{1} <{2}>'.format(api_ex.message, key, type_hints.__type__)
+        api_ex.err_msg = '{0}：{1} <{2}>'.format(api_ex.err_msg, key, _type_hints.typename)
         raise api_ex
     else:
         return value
-
-
-if __name__ == '__main__':
-    test = {'key': {'value': 'a', 'hello': 'python'}, 'test': 1}
-    print(test.keys())
