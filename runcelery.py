@@ -14,5 +14,5 @@ app = Celery('apizen', broker=current_config.CELERY_BROKER_URL)
 
 app.config_from_object('config.current_config')
 
-if __name__ == "__main__":
-    app.start(argv=['celery', 'worker', '-l', 'info'])
+# if __name__ == "__main__":
+#     app.start()

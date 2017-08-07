@@ -10,7 +10,6 @@ import signal
 import socket
 import logging
 import tornado.web
-from runcelery import app
 from tookit.router import Route
 from apizen import ApiZenManager
 from config import current_config
@@ -27,7 +26,7 @@ define('port', default=current_config.get('PORT', 8011), type=int)
 
 
 # ApiZen初始化
-apizen = ApiZenManager.init_app(config=current_config, celery=app)
+apizen = ApiZenManager.init_app(config=current_config)
 
 
 class Application(tornado.web.Application):
@@ -92,4 +91,5 @@ if __name__ == '__main__':
     if cmdline.command == 'runserver':
         runserver()
     elif cmdline.command == 'runcelery':
+        from runcelery import app
         app.start(argv=['celery', 'worker', '-l', 'info'])

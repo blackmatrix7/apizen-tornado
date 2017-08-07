@@ -17,7 +17,7 @@ class ApiZenManager:
     celery = None
 
     @classmethod
-    def init_app(cls, config, celery):
+    def init_app(cls, config, celery=None):
         cls.config = config
         cls.celery = celery
         # 导入Api版本
