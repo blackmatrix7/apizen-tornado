@@ -97,7 +97,7 @@ class WebApiRoute(ApiBaseHandler):
             import tornado.gen
             retdata = yield tornado.gen.Task(async_api_func.apply_async, kwargs={**func_args})
             result = retdata.result
-            if isinstance(result, Exception) or issubclass(result, Exception):
+            if isinstance(result, Exception) or issubclass(result.__class__, Exception):
                 raise result
         else:
             result = api_func(**func_args)
