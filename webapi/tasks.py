@@ -6,9 +6,9 @@
 # @File : tasks.py
 # @Software: PyCharm
 from runcelery import app
-from inspect import Parameter
 from apizen.schema import convert
 from apizen.method import get_method
+from inspect import Parameter, signature
 from apizen.exceptions import ApiSysExceptions, SysException
 
 __author__ = 'blackmatrix'
@@ -24,12 +24,12 @@ def async_webapi(method, v, args, http_method):
 
     try:
         # 获取接口处理函数，及接口部分配置
-        api_func, sign,  async_api_func, *_ = get_method(version=v, api_method=method, http_method=http_method)
+        api_func, *_ = get_method(version=v, api_method=method, http_method=http_method)
 
         # 最终传递给接口处理方法的全部参数
         func_args = {}
 
-        api_method_params = sign.parameters
+        api_method_params = signature(api_func).parameters
         for k, v in api_method_params.items():
             if str(v.kind) == 'VAR_POSITIONAL':
                 raise ApiSysExceptions.error_api_config
