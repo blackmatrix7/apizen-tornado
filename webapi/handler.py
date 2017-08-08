@@ -64,8 +64,7 @@ class ApiBaseHandler(SysBaseHandler):
         self.api_code = 1000
         self.api_msg = '执行成功'
         self.http_code = 200
-
-        super().__init__(application, request, **kwargs)
+        SysBaseHandler.__init__(self, application, request, **kwargs)
 
     def write(self, chunk):
         """Writes the given chunk to the output buffer.

@@ -10,13 +10,13 @@ import signal
 import socket
 import logging
 import tornado.web
-import tornado.ioloop
-from tookit.router import Route
-from apizen import ApiZenManager
 from config import current_config
+from tookit.router import Route
+from tornado.ioloop import IOLoop
 from tookit.cmdline import cmdline
 from bootloader import torconf, cache
 from tornado.httpserver import HTTPServer
+from apizen.manager import ApiZenManager
 from tookit.session import MemcacheSessionStore
 from tornado.options import define, parse_command_line, options
 
@@ -26,7 +26,7 @@ define('port', default=current_config.get('PORT', 8011), type=int)
 
 
 # ApiZen初始化
-apizen = ApiZenManager.init_app(config=current_config)
+apizen = ApiZenManager(config=current_config)
 
 
 class Application(tornado.web.Application):
@@ -50,11 +50,37 @@ class Application(tornado.web.Application):
 def runserver():
 
     logging_root = logging.getLogger('root')
-    application = Application()
-    application.listen(8013)
-    tornado.ioloop.IOLoop.instance().start()
+    http_server = HTTPServer(Application(), xheaders=True)
+    http_server.listen(options.port)
+    loop = IOLoop.instance()
 
-    logging_root.info('Server running on http://%s:%s' % ('127.0.0.1', options.port))
+    def shutdown():
+        logging_root.info('Server stopping ...')
+        http_server.stop()
+        logging_root.info('IOLoop will be terminate in 1 seconds')
+        deadline = time.time() + 1
+
+        def terminate():
+            now = time.time()
+
+            if now < deadline and (loop._callbacks or loop._timeouts):
+                loop.add_timeout(now + 1, terminate)
+            else:
+                loop.stop()
+                logger_root.info('Server shutdown')
+
+        terminate()
+
+    def sig_handler(sig):
+        logging_root.warning('Caught signal:%s', sig)
+        loop.add_callback(shutdown)
+
+    signal.signal(signal.SIGINT, sig_handler)
+    signal.signal(signal.SIGTERM, sig_handler)
+    ip_list = socket.gethostbyname_ex(socket.gethostname())
+    local_ip = ip_list[2][len(ip_list[2]) - 1]
+    logging_root.info('Server running on http://%s:%s' % (local_ip, options.port))
+    loop.start()
 
 if __name__ == '__main__':
     logger_root = logging.getLogger('root')

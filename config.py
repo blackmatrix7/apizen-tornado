@@ -30,7 +30,7 @@ class BaseConfig(ConfigMixin):
 
     DEBUG = True
     TESTING = True
-    ASYNC = True
+    ASYNC = False
 
     HOST = '127.0.0.1'
     PORT = 8011
@@ -69,10 +69,8 @@ class BaseConfig(ConfigMixin):
 
     # Celery
     CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL')
-    CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND')
-    CELERY_ACCEPT_CONTENT = ['json']
-    CELERY_TASK_SERIALIZER = 'json'
-    CELERY_RESULT_SERIALIZER = 'json'
+    CELERY_RESULT_BACKEND = CELERY_BROKER_URL
+    CELERY_ACCEPT_CONTENT = ['pickle']
     CELERY_REDIRECT_STDOUTS_LEVEL = 'INFO'
     CELERY_IMPORTS = ('webapi.tasks', 'webapi.methods')
     # celery worker 的并发数
@@ -86,6 +84,7 @@ class DevConfig(BaseConfig):
 
     DEBUG = True
     TESTING = True
+    ASYNC = False
 
     # Cache
     CACHE_KEY_PREFIX = 'debug'
@@ -99,7 +98,7 @@ class TestConfig(BaseConfig):
 
     DEBUG = False
     TESTING = True
-    ASYNC = True
+    ASYNC = False
 
     # Cache
     CACHE_KEY_PREFIX = 'test'
@@ -117,8 +116,6 @@ class ProdConfig(BaseConfig):
 
     # Cache
     CACHE_KEY_PREFIX = 'master'
-    # 默认队列
-    CELERY_DEFAULT_QUEUE = 'celery@apizen.prod'
 
     # Port
     PORT = 8013
@@ -135,4 +132,9 @@ configs = {
     'default': devcfg
 }
 
-current_config = configs['prodcfg']
+config_name = cmdline.config
+try:
+    import localconfig
+    current_config = localconfig.configs[config_name]
+except ImportError:
+    current_config = configs[config_name]
