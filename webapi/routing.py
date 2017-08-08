@@ -71,19 +71,17 @@ class WebApiRoute(ApiBaseHandler):
             retdata = yield tornado.gen.Task(async_webapi.apply_async,
                                              kwargs={'method': self._method, 'v': self._v,
                                                      'http_method': self.request.method, 'args': self.request_args})
-            result = retdata.result
-            if isinstance(result, Exception) or issubclass(result.__class__, Exception):
-                raise result
+            self.resp, self.http_code = retdata.result
         else:
-            result = async_webapi(method=self._method, v=self._v, http_method=self.request.method, args=self.request_args)
+            self.resp, self.http_code = async_webapi(method=self._method, v=self._v, http_method=self.request.method, args=self.request_args)
 
-        self.resp = {
-            'meta': {
-                'code': self.api_code,
-                'message': self.api_msg
-            },
-            'response': result
-        }
+        # self.resp = {
+        #     'meta': {
+        #         'code': self.api_code,
+        #         'message': self.api_msg
+        #     },
+        #     'response': result
+        # }
 
         self.set_header("Access-Control-Allow-Origin", "*")
         self.set_status(status_code=self.http_code)

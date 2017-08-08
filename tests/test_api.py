@@ -8,7 +8,6 @@
 import json
 import unittest
 import requests
-from config import current_config
 
 __author__ = 'blackmatrix'
 
