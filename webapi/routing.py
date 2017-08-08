@@ -144,8 +144,3 @@ class WebApiRoute(ApiBaseHandler):
         if self.api_code != 1000:
             logging.error(self.resp)
 
-
-
-if __name__ == '__main__':
-    pass
-
