@@ -12,8 +12,6 @@ __author__ = 'blackmatrix'
 
 config = config.current_config
 
-print(config.CELERY_BROKER_URL)
-
 app = Celery('apizen',  broker=config.CELERY_BROKER_URL)
 
 app.config_from_object('config.current_config')
