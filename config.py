@@ -118,6 +118,8 @@ class ProdConfig(BaseConfig):
 
     # Cache
     CACHE_KEY_PREFIX = 'master'
+    # 默认队列
+    CELERY_DEFAULT_QUEUE = 'celery@apizen.prod'
 
     # Port
     PORT = 8013
