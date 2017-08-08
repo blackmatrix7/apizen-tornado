@@ -30,6 +30,7 @@ class BaseConfig(ConfigMixin):
 
     DEBUG = True
     TESTING = True
+    ASYNC = False
 
     HOST = '127.0.0.1'
     PORT = 8011
@@ -82,6 +83,7 @@ class DevConfig(BaseConfig):
 
     DEBUG = True
     TESTING = True
+    ASYNC = False
 
     # Cache
     CACHE_KEY_PREFIX = 'debug'
@@ -95,6 +97,7 @@ class TestConfig(BaseConfig):
 
     DEBUG = False
     TESTING = True
+    ASYNC = False
 
     # Cache
     CACHE_KEY_PREFIX = 'test'
@@ -108,6 +111,7 @@ class ProdConfig(BaseConfig):
 
     DEBUG = False
     TESTING = False
+    ASYNC = True
 
     # Cache
     CACHE_KEY_PREFIX = 'master'
