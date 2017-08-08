@@ -127,7 +127,7 @@ configs = {
     'default': devcfg
 }
 
-config_name = 'prodcfg'
+config_name = cmdline.config
 try:
     import localconfig
     current_config = localconfig.configs[config_name]
