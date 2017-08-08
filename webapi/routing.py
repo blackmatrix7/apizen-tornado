@@ -75,14 +75,6 @@ class WebApiRoute(ApiBaseHandler):
         else:
             self.resp, self.http_code = async_webapi(method=self._method, v=self._v, http_method=self.request.method, args=self.request_args)
 
-        # self.resp = {
-        #     'meta': {
-        #         'code': self.api_code,
-        #         'message': self.api_msg
-        #     },
-        #     'response': result
-        # }
-
         self.set_header("Access-Control-Allow-Origin", "*")
         self.set_status(status_code=self.http_code)
         self.write(self.resp)
