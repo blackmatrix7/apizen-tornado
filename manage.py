@@ -10,7 +10,7 @@ import signal
 import socket
 import logging
 import tornado.web
-from config import config
+from config import current_config
 from tookit.router import Route
 from tornado.ioloop import IOLoop
 from tookit.cmdline import cmdline
@@ -22,11 +22,11 @@ from tornado.options import define, parse_command_line, options
 
 # 定义tornado options
 define('cmd', default='runserver', metavar='runserver|syncdb|syncnewdb')
-define('port', default=config.get('PORT', 8011), type=int)
+define('port', default=current_config.get('PORT', 8011), type=int)
 
 
 # ApiZen初始化
-apizen = ApiZenManager(config=config)
+apizen = ApiZenManager(config=current_config)
 
 
 class Application(tornado.web.Application):

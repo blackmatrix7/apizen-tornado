@@ -10,10 +10,10 @@ from celery import Celery
 
 __author__ = 'blackmatrix'
 
-config = config.config
+config = config.current_config
 
 print(config.CELERY_BROKER_URL)
 
 app = Celery('apizen',  broker=config.CELERY_BROKER_URL)
 
-app.config_from_object('config.config')
+app.config_from_object('config.current_config')

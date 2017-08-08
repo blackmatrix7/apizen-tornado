@@ -9,7 +9,7 @@ import re
 import json
 import copy
 from decimal import Decimal
-from config import config
+from config import current_config
 from json import JSONDecodeError
 from datetime import datetime, date
 from .exceptions import ApiSysExceptions
@@ -117,7 +117,7 @@ class TypeDate(date, TypeBase):
 
     def __init__(self, format_=None):
         try:
-            self.format_ = format_ or config.get('APIZEN_DATE_FMT', APIZEN_DATE_FMT)
+            self.format_ = format_ or current_config.get('APIZEN_DATE_FMT', APIZEN_DATE_FMT)
         except (KeyError, ImportError):
             self.format_ = APIZEN_DATE_FMT
         finally:
@@ -134,7 +134,7 @@ class TypeDatetime(datetime, TypeBase):
 
     def __init__(self, format_=None):
         try:
-            self.format_ = format_ or config.get('APIZEN_DATETIME_FMT', APIZEN_DATETIME_FMT)
+            self.format_ = format_ or current_config.get('APIZEN_DATETIME_FMT', APIZEN_DATETIME_FMT)
         except (KeyError, ImportError):
             self.format_ = APIZEN_DATETIME_FMT
         finally:

@@ -127,5 +127,9 @@ configs = {
     'default': devcfg
 }
 
-config = testcfg
-# config = configs[cmdline.config]
+config_name = 'prodcfg'
+try:
+    import localconfig
+    current_config = localconfig.configs[config_name]
+except ImportError:
+    current_config = configs[config_name]

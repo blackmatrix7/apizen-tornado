@@ -10,7 +10,7 @@ import tcelery
 import logging
 import tornado.gen
 import tornado.web
-from config import config
+from config import current_config
 from tookit.router import route
 from json import JSONDecodeError
 from webapi.handler import ApiBaseHandler
@@ -64,7 +64,7 @@ class WebApiRoute(ApiBaseHandler):
             api_msg = api_ex.err_msg
         # 全局异常
         except Exception as ex:
-            if config.DEBUG is False:
+            if current_config.DEBUG is False:
                 api_ex = ApiSysExceptions.system_error
                 api_code = api_ex.err_code
                 http_code = api_ex.http_code
@@ -164,7 +164,7 @@ class WebApiRoute(ApiBaseHandler):
             # return api_method(**func_args)
             result = yield tornado.gen.Task(async_api_func.apply_async, kwargs={**func_args})
             resp = result.result
-            if isinstance(resp, Exception) or issubclass(resp, Exception):
+            if isinstance(resp, Exception):
                 raise resp
         # 参数缺失异常
         except MissingArgumentError as miss_arg_err:
@@ -193,7 +193,7 @@ class WebApiRoute(ApiBaseHandler):
             api_msg = api_ex.err_msg
         # 全局异常
         except Exception as ex:
-            if config.DEBUG is False:
+            if current_config.DEBUG is False:
                 api_ex = ApiSysExceptions.system_error
                 api_code = api_ex.err_code
                 http_code = api_ex.http_code
