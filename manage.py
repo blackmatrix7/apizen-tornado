@@ -10,9 +10,9 @@ import signal
 import socket
 import logging
 import tornado.web
-from config import current_config
 from tookit.router import Route
 from tornado.ioloop import IOLoop
+from config import current_config
 from tookit.cmdline import cmdline
 from bootloader import torconf, cache
 from tornado.httpserver import HTTPServer
