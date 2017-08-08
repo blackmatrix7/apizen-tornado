@@ -74,6 +74,7 @@ class BaseConfig(ConfigMixin):
     CELERY_TASK_SERIALIZER = 'json'
     CELERY_RESULT_SERIALIZER = 'json'
     CELERY_REDIRECT_STDOUTS_LEVEL = 'INFO'
+    CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
     CELERY_IMPORTS = ('webapi.tasks', 'webapi.methods')
     # celery worker 的并发数
     CELERYD_CONCURRENCY = 3
