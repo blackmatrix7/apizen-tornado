@@ -8,6 +8,7 @@
 import json
 import unittest
 import requests
+from config import current_config
 
 __author__ = 'blackmatrix'
 
@@ -19,7 +20,7 @@ class ApiZenTestCase(unittest.TestCase):
             host=self.api_host, version=self.api_version,  method=self.api_method)
 
     def setUp(self):
-        self.api_host = 'http://127.0.0.1:8011/api/router/rest'
+        self.api_host = 'http://127.0.0.1:8013/api/router/rest'
         self.api_version = '1.0'
         self.api_method = 'matrix.api.first-api'
 
