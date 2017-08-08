@@ -56,6 +56,7 @@ class BaseConfig(ConfigMixin):
     # 日期格式配置
     DATE_FMT = '%Y-%m-%d'
     DATETIME_FMT = '%Y-%m-%d %H:%M:%S'
+
     # RabbitMQ
     RabbitMQ_HOST = None
     RabbitMQ_PORT = None
