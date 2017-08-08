@@ -41,7 +41,7 @@ class BaseConfig(ConfigMixin):
     # cookie
     COOKIE_SECRET = '@r3K8mktcn*j5T#^M@qWZJ&tVy!9Spjz'
 
-    # login
+    # login匹配
     LOGIN_URL = '/signin'
 
     # 数据库配置
@@ -70,7 +70,7 @@ class BaseConfig(ConfigMixin):
     # Celery
     CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL')
     CELERY_RESULT_BACKEND = CELERY_BROKER_URL
-    CELERY_ACCEPT_CONTENT = ['json']
+    CELERY_ACCEPT_CONTENT = ['json', 'pickle']
     CELERY_TASK_SERIALIZER = 'json'
     CELERY_RESULT_SERIALIZER = 'json'
     CELERY_REDIRECT_STDOUTS_LEVEL = 'INFO'
