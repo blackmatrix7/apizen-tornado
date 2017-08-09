@@ -6,7 +6,6 @@
 # @File    : routing.py
 # @Software: PyCharm
 import json
-import tcelery
 import logging
 import tornado.gen
 import tornado.web
@@ -18,10 +17,9 @@ from webapi.tasks import async_webapi
 from webapi.handler import ApiBaseHandler
 from tornado.web import MissingArgumentError
 from apizen.exceptions import ApiSysExceptions, SysException
+from webapi.async import async
 
 __author__ = 'matrix'
-
-tcelery.setup_nonblocking_producer(celery_app=app)
 
 
 @route(r'/api/router/rest')
@@ -69,12 +67,12 @@ class WebApiRoute(ApiBaseHandler):
     @tornado.gen.coroutine
     def handler(self):
         if current_config.ASYNC is True:
-            retdata = yield tornado.gen.Task(async_webapi.apply_async,
-                                             kwargs={'method': self._method, 'v': self._v,
-                                                     'http_method': self.request.method, 'args': self.request_args})
-            self.resp, self.http_code = retdata.result
+            retdata = yield async(async_webapi, method=self._method, v=self._v, http_method=self.request.method,
+                                  args=self.request_args)
         else:
-            self.resp, self.http_code = async_webapi(method=self._method, v=self._v, http_method=self.request.method, args=self.request_args)
+            retdata = async_webapi(method=self._method, v=self._v, http_method=self.request.method, args=self.request_args)
+
+        self.resp, self.http_code = retdata
 
         self.set_header("Access-Control-Allow-Origin", "*")
         self.set_status(status_code=self.http_code)
