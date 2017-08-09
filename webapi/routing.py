@@ -10,9 +10,10 @@ import tcelery
 import logging
 import tornado.gen
 import tornado.web
-from config import current_config
+from runcelery import app
 from tookit.router import route
 from json import JSONDecodeError
+from config import current_config
 from webapi.tasks import async_webapi
 from webapi.handler import ApiBaseHandler
 from tornado.web import MissingArgumentError
@@ -20,7 +21,7 @@ from apizen.exceptions import ApiSysExceptions, SysException
 
 __author__ = 'matrix'
 
-tcelery.setup_nonblocking_producer()
+tcelery.setup_nonblocking_producer(celery_app=app)
 
 
 @route(r'/api/router/rest')
