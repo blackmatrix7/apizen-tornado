@@ -77,6 +77,7 @@ class WebApiRoute(ApiBaseHandler):
         self.set_header("Access-Control-Allow-Origin", "*")
         self.set_status(status_code=self.http_code)
         self.write(self.resp)
+        self.on_finish()
 
     def write_error(self, status_code, **kwargs):
         error_type, error, traceback = kwargs['exc_info']
