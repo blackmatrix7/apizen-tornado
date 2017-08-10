@@ -9,7 +9,7 @@ import json
 import logging
 import tornado.gen
 import tornado.web
-from runcelery import app
+from apizen.async import async
 from tookit.router import route
 from json import JSONDecodeError
 from config import current_config
@@ -17,7 +17,6 @@ from webapi.tasks import async_webapi
 from webapi.handler import ApiBaseHandler
 from tornado.web import MissingArgumentError
 from apizen.exceptions import ApiSysExceptions, SysException
-from webapi.async import async
 
 __author__ = 'matrix'
 
