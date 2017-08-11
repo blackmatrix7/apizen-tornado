@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 # @Time  : 2017/5/19 上午8:54
 # @Author : Matrix
-# @Site :
+# @Github : https://github.com/blackmatrix7/
+# @Blog : http://www.cnblogs.com/blackmatrix/
 # @File : exceptions.py
 # @Software: PyCharm
 import types

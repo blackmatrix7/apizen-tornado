@@ -9,8 +9,8 @@ import re
 import json
 import copy
 from decimal import Decimal
-from config import current_config
 from json import JSONDecodeError
+from config import current_config
 from datetime import datetime, date
 from .exceptions import ApiSysExceptions
 from .config import APIZEN_DATE_FMT, APIZEN_DATETIME_FMT

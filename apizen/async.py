@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 # @Time: 2017/8/9 下午8:02
 # @Author: BlackMatrix
-# @Site: https://github.com/blackmatrix7
+# @Github : https://github.com/blackmatrix7/
+# @Blog : http://www.cnblogs.com/blackmatrix/
 # @File: async.py
 # @Software: PyCharm
 from tornado.ioloop import IOLoop

@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# @Time    : 2017/5/19 上午9:33
-# @Author  : Matrix
-# @Site    :
-# @File    : controller.py
+# @Time : 2017/8/4 上午11:03
+# @Author : Matrix
+# @Github : https://github.com/blackmatrix7/
+# @Blog : http://www.cnblogs.com/blackmatrix/
+# @File : method.py
 # @Software: PyCharm
 from inspect import unwrap
 from functools import wraps
