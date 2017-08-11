@@ -6,7 +6,7 @@
 # @Blog : http://www.cnblogs.com/blackmatrix/
 # @File : config.py
 # @Software: PyCharm
-
+from ..config import CommonConfig
 """
 -------------------------------
 ApiZen 接口版本的注册、管理与继承功能
@@ -41,25 +41,8 @@ class ConfigMixin:
         return getattr(self, item, value)
 
 
-class DefaultConfig(ConfigMixin):
-
-    # 是否激活ApiZen默认的路由
-    ACTIVATE_DEFAULT_ROUTE = True
-
-    # 接口路由默认地址
-    APIZEN_ROUTE = ('/api/router/rest', '/api/router/json')
-
-    # 接口默认返回格式
-    APIZEN_RESP_FMT = '{"meta": {"code": {code}, "message": {message}}, "response": {response}}'
-
-    # 接口版本位置
-    APIZEN_VERSIONS = None
-
-    # 默认Date格式
-    APIZEN_DATE_FMT = '%Y/%m/%d'
-
-    # 默认DateTime格式
-    APIZEN_DATETIME_FMT = '%Y/%m/%d %H:%M:%S'
+class DefaultConfig(CommonConfig, ConfigMixin):
+    pass
 
 
 default_config = DefaultConfig()
