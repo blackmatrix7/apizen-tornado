@@ -6,10 +6,16 @@
 # @Blog : http://www.cnblogs.com/blackmatrix/
 # @File : __init__.py
 # @Software: PyCharm
+import sys
 
-from apizen.manager import ApiZenManager
+FLASK = False
+TORNADO = False
 
-
-__all__ = ['ApiZenManager']
+if 'flask' in sys.modules and 'tornado' not in sys.modules:
+    FLASK, TORNADO = True, False
+    from .flask.manager import ApiZenManager
+elif 'tornado' in sys.modules and 'flask' not in sys.modules:
+    FLASK, TORNADO = False, True
+    from .tornado.manager import ApiZenManager
 
 __author__ = 'blackmatrix'

@@ -7,7 +7,6 @@
 # @File : manager.py
 # @Software: PyCharm
 import importlib
-from . import config as defaultconfig
 
 """
 -------------------------------
