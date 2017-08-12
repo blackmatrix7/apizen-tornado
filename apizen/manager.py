@@ -7,7 +7,7 @@
 # @File : manager.py
 # @Software: PyCharm
 import importlib
-from . import config as defaultconfig
+
 
 """
 -------------------------------
@@ -21,15 +21,9 @@ __author__ = 'blackmatrix'
 
 class ApiZenManager:
 
-    config = None
-
-    def __init__(self, config=None):
-        if config is None:
-            ApiZenManager.config = defaultconfig
-        else:
-            ApiZenManager.config = config
+    def __init__(self, config):
         # 导入Api版本
-        self.import_api_versions(versions=ApiZenManager.config.get('APIZEN_VERSIONS'))
+        self.import_api_versions(versions=config.get('APIZEN_VERSIONS'))
 
     # 导入Api版本
     @staticmethod

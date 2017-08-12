@@ -7,9 +7,23 @@
 # @Software: PyCharm
 import os
 from tookit.cmdline import cmdline
-from apizen.config import ConfigMixin
 
 __author__ = 'blackmatrix'
+
+
+class ConfigMixin:
+
+    def __setitem__(self, key, value):
+        raise AttributeError
+
+    def __delitem__(self, key):
+        raise AttributeError
+
+    def __getitem__(self, item):
+        return getattr(self, item)
+
+    def get(self, item, value=None):
+        return getattr(self, item, value)
 
 
 class BaseConfig(ConfigMixin):
