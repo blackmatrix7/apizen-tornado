@@ -19,7 +19,7 @@ class ApiZenTestCase(unittest.TestCase):
             host=self.api_host, version=self.api_version,  method=self.api_method)
 
     def setUp(self):
-        self.api_host = 'http://127.0.0.1:8013/api/router/rest'
+        self.api_host = 'http://127.0.0.1:8012/api/router/rest'
         self.api_version = '1.0'
         self.api_method = 'matrix.api.first-api'
 
