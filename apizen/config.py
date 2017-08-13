@@ -36,7 +36,7 @@ class ConfigMixin:
         return getattr(self, item)
 
     def items(self):
-        yield from {k: getattr(self, k, None) for k in dir(self) if k.upper() == k}.items()
+        return {k: getattr(self, k, None) for k in dir(self) if k.upper() == k}.items()
 
     def get(self, item, value=None):
         return getattr(self, item, value)
