@@ -10,10 +10,9 @@ import json
 import copy
 from decimal import Decimal
 from json import JSONDecodeError
-from config import current_config
+from .config import current_config
 from datetime import datetime, date
 from .exceptions import ApiSysExceptions
-from .config import APIZEN_DATE_FMT, APIZEN_DATETIME_FMT
 
 __author__ = 'blackmatrix'
 
@@ -123,12 +122,8 @@ class TypeDate(date, TypeBase):
         return _value
 
     def __init__(self, format_=None):
-        try:
-            self.format_ = format_ or current_config.get('APIZEN_DATE_FMT', APIZEN_DATE_FMT)
-        except (KeyError, ImportError):
-            self.format_ = APIZEN_DATE_FMT
-        finally:
-            super().__init__()
+        self.format_ = format_ or current_config['APIZEN_DATE_FMT']
+        super().__init__()
 
 
 class TypeDatetime(datetime, TypeBase):
@@ -140,12 +135,8 @@ class TypeDatetime(datetime, TypeBase):
         return _value
 
     def __init__(self, format_=None):
-        try:
-            self.format_ = format_ or current_config.get('APIZEN_DATETIME_FMT', APIZEN_DATETIME_FMT)
-        except (KeyError, ImportError):
-            self.format_ = APIZEN_DATETIME_FMT
-        finally:
-            super().__init__()
+        self.format_ = format_ or current_config.get('APIZEN_DATETIME_FMT')
+        super().__init__()
 
 
 class TypeBool(bool, TypeBase):

@@ -7,26 +7,11 @@
 # @Software: PyCharm
 import os
 from tookit.cmdline import cmdline
-
+from apizen.config import ConfigMixin, BaseConfig
 __author__ = 'blackmatrix'
 
 
-class ConfigMixin:
-
-    def __setitem__(self, key, value):
-        raise AttributeError
-
-    def __delitem__(self, key):
-        raise AttributeError
-
-    def __getitem__(self, item):
-        return getattr(self, item)
-
-    def get(self, item, value=None):
-        return getattr(self, item, value)
-
-
-class BaseConfig(ConfigMixin):
+class CommonConfig(BaseConfig):
 
     DEBUG = True
     TESTING = True
@@ -83,10 +68,10 @@ class BaseConfig(ConfigMixin):
 
 
 # 开发环境配置
-class DevConfig(BaseConfig):
+class DevConfig(CommonConfig):
 
     DEBUG = True
-    TESTING = True
+    TESTING = False
     ASYNC = False
 
     # Cache
@@ -97,7 +82,7 @@ class DevConfig(BaseConfig):
 
 
 # 测试环境配置
-class TestConfig(BaseConfig):
+class TestConfig(CommonConfig):
 
     DEBUG = False
     TESTING = True
@@ -111,7 +96,7 @@ class TestConfig(BaseConfig):
 
 
 # 生产环境配置
-class ProdConfig(BaseConfig):
+class ProdConfig(CommonConfig):
 
     DEBUG = False
     TESTING = False

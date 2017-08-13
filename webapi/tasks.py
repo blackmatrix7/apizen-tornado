@@ -52,7 +52,7 @@ def async_webapi(method, v, args, http_method):
         api_msg = ex.err_msg
         http_code = ex.http_code
         result = None
-    except Exception:
+    except Exception as sys_ex:
         ex = ApiSysExceptions.system_error
         api_code = ex.err_code
         api_msg = ex.err_msg
