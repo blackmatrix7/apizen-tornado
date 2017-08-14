@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# @Time : 2017/8/4 上午11:03
-# @Author : Matrix
-# @Github : https://github.com/blackmatrix7/
-# @Blog : http://www.cnblogs.com/blackmatrix/
-# @File : method.py
+# @Time    : 2017/5/19 上午9:33
+# @Author  : Matrix
+# @Site    :
+# @File    : controller.py
 # @Software: PyCharm
 from inspect import unwrap
 from functools import wraps
@@ -92,8 +91,6 @@ def run_method(api_method, request_params):
 
     # 最终传递给接口处理方法的全部参数
     func_args = {}
-    if hasattr(api_method, 'format_retinfo') and api_method.format_retinfo:
-        print(True)
     # 获取函数方法的参数
     api_method_params = signature(api_method).parameters
 
