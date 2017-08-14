@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # Time: 2017/1/4 10:30
 # Author: Matrix
-# Site: 
+# Site:
 # File: log.py
 # Software: PyCharm
 

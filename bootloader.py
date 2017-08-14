@@ -6,7 +6,8 @@ from tookit.initlogs import log_init
 
 
 # 初始化日志配置文件
-log_init(file=os.path.abspath('logging.cfg'))
+local_cfg_path = os.path.abspath('logging.cfg')
+log_init(file=local_cfg_path)
 
 torconf = {
         'style_path': os.path.join(os.path.dirname(__file__), 'style'),

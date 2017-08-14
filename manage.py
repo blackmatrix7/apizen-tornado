@@ -1,7 +1,7 @@
 # !/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Time: 2017/1/4 10:59
-# Author: Matrix
+# Author: Vcan
 # Site:
 # File: manage.py
 # Software: PyCharm
@@ -11,11 +11,11 @@ import socket
 import logging
 import tornado.web
 from tookit.router import Route
-from apizen import ApiZenManager
-from tornado.ioloop import IOLoop
 from config import current_config
+from tornado.ioloop import IOLoop
 from tookit.cmdline import cmdline
-from bootloader import torconf, cache
+from bootloader import cache, torconf
+from apizen.manager import ApiZenManager
 from tornado.httpserver import HTTPServer
 from tookit.session import MemcacheSessionStore
 from tornado.options import define, parse_command_line, options
@@ -44,7 +44,7 @@ class Application(tornado.web.Application):
                        tornado.web.url(r"/upload/(.+)", tornado.web.StaticFileHandler,
                                        dict(path=torconf['upload_path']), name='upload_path')
                    ] + Route.routes()
-        super().__init__(handlers, **torconf)
+        tornado.web.Application.__init__(self, handlers, **torconf)
 
 
 def runserver():
@@ -54,32 +54,32 @@ def runserver():
     http_server.listen(options.port)
     loop = IOLoop.instance()
 
-    def shutdown():
-        logging_root.info('Server stopping ...')
-        http_server.stop()
-        logging_root.info('IOLoop will be terminate in 1 seconds')
-        deadline = time.time() + 1
-
-        def terminate():
-            now = time.time()
-
-            if now < deadline and (loop._callbacks or loop._timeouts):
-                loop.add_timeout(now + 1, terminate)
-            else:
-                loop.stop()
-                logger_root.info('Server shutdown')
-
-        terminate()
-
-    def sig_handler(sig):
-        logging_root.warning('Caught signal:%s', sig)
-        loop.add_callback(shutdown)
-
-    signal.signal(signal.SIGINT, sig_handler)
-    signal.signal(signal.SIGTERM, sig_handler)
-    ip_list = socket.gethostbyname_ex(socket.gethostname())
-    local_ip = ip_list[2][len(ip_list[2]) - 1]
-    logging_root.info('Server running on http://%s:%s' % (local_ip, options.port))
+    # def shutdown():
+    #     logging_root.info('Server stopping ...')
+    #     http_server.stop()
+    #     logging_root.info('IOLoop will be terminate in 1 seconds')
+    #     deadline = time.time() + 1
+    #
+    #     def terminate():
+    #         now = time.time()
+    #
+    #         if now < deadline and (loop._callbacks or loop._timeouts):
+    #             loop.add_timeout(now + 1, terminate)
+    #         else:
+    #             loop.stop()
+    #             logger_root.info('Server shutdown')
+    #
+    #     terminate()
+    #
+    # def sig_handler(sig):
+    #     logging_root.warning('Caught signal:%s', sig)
+    #     loop.add_callback(shutdown)
+    #
+    # signal.signal(signal.SIGINT, sig_handler)
+    # signal.signal(signal.SIGTERM, sig_handler)
+    # ip_list = socket.gethostbyname_ex(socket.gethostname())
+    # local_ip = ip_list[2][len(ip_list[2]) - 1]
+    logging_root.info('Server running on http://%s:%s' % ('127.0.0.1', options.port))
     loop.start()
 
 if __name__ == '__main__':
@@ -90,6 +90,3 @@ if __name__ == '__main__':
 
     if cmdline.command == 'runserver':
         runserver()
-    elif cmdline.command == 'runcelery':
-        from runcelery import app
-        app.start(argv=['celery', 'worker', '-l', 'info'])
