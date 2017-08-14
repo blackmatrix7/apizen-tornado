@@ -22,11 +22,10 @@ __author__ = 'blackmatrix'
 
 class ApiZenManager:
 
-    current_config = {}
-
     def __init__(self, config):
-        for k, v in default_config.items():
-            set_current_config(k, config.get(k, default_config[k]))
+        self.config = config
+        # 复制传入的配置信息
+        self.copy_current_config()
         # 导入Api版本
         self.import_api_versions(versions=config.get('APIZEN_VERSIONS'))
 
@@ -36,6 +35,11 @@ class ApiZenManager:
         if versions:
             for version in versions:
                 importlib.import_module(version)
+
+    def copy_current_config(self):
+        for k, v in default_config.items():
+            set_current_config(k, self.config.get(k, default_config[k]))
+
 
 ioloop = IOLoop.instance()
 
