@@ -44,7 +44,7 @@ class Application(tornado.web.Application):
                        tornado.web.url(r"/upload/(.+)", tornado.web.StaticFileHandler,
                                        dict(path=torconf['upload_path']), name='upload_path')
                    ] + Route.routes()
-        tornado.web.Application.__init__(self, handlers, **torconf)
+        super().__init__(handlers, **torconf)
 
 
 def runserver():

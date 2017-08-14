@@ -9,8 +9,8 @@ import json
 import logging
 import tornado.gen
 import tornado.web
-from apizen.async import async
 from tookit.router import route
+from apizen.manager import async
 from json import JSONDecodeError
 from config import current_config
 from webapi.tasks import async_webapi

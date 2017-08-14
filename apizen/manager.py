@@ -7,6 +7,8 @@
 # @File : manager.py
 # @Software: PyCharm
 import importlib
+from tornado.ioloop import IOLoop
+from tornado.concurrent import Future
 from .config import default_config, set_current_config
 """
 -------------------------------
@@ -34,6 +36,22 @@ class ApiZenManager:
         if versions:
             for version in versions:
                 importlib.import_module(version)
+
+ioloop = IOLoop.instance()
+
+
+def async(task, *args, **kwargs):
+    future = Future()
+    result = task.delay(*args, **kwargs)
+    IOLoop.instance().add_callback(_on_result, result, future)
+    return future
+
+
+def _on_result(result, future):
+    if result.ready():
+        future.set_result(result.result)
+    else:
+        IOLoop.instance().add_callback(_on_result, result, future)
 
 
 if __name__ == '__main__':
