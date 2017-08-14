@@ -53,32 +53,6 @@ def runserver():
     http_server = HTTPServer(Application(), xheaders=True)
     http_server.listen(options.port)
     loop = IOLoop.instance()
-
-    # def shutdown():
-    #     logging_root.info('Server stopping ...')
-    #     http_server.stop()
-    #     logging_root.info('IOLoop will be terminate in 1 seconds')
-    #     deadline = time.time() + 1
-    #
-    #     def terminate():
-    #         now = time.time()
-    #
-    #         if now < deadline and (loop._callbacks or loop._timeouts):
-    #             loop.add_timeout(now + 1, terminate)
-    #         else:
-    #             loop.stop()
-    #             logger_root.info('Server shutdown')
-    #
-    #     terminate()
-    #
-    # def sig_handler(sig):
-    #     logging_root.warning('Caught signal:%s', sig)
-    #     loop.add_callback(shutdown)
-    #
-    # signal.signal(signal.SIGINT, sig_handler)
-    # signal.signal(signal.SIGTERM, sig_handler)
-    # ip_list = socket.gethostbyname_ex(socket.gethostname())
-    # local_ip = ip_list[2][len(ip_list[2]) - 1]
     logging_root.info('Server running on http://%s:%s' % ('127.0.0.1', options.port))
     loop.start()
 
