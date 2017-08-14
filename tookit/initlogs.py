@@ -15,10 +15,9 @@ if not os.path.exists("logs"):
     os.mkdir("logs")
 
 
-def log_init(file=None):
+def log_init(file):
     try:
-        if not file:
-            return logging.config.fileConfig(file, disable_existing_loggers=False)
+        logging.config.fileConfig(file, disable_existing_loggers=False)
     except Exception as ex:
         f = open('logs/traceback.txt', 'a')
         traceback.print_exc()
