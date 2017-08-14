@@ -6,11 +6,12 @@
 # @Blog : http://www.cnblogs.com/blackmatrix/
 # @File : config.py
 # @Software: PyCharm
+
 """
 -------------------------------
 ApiZen 接口版本的注册、管理与继承功能
 -------------------------------
-适用版本：Flask
+适用版本：Flask，Tornado
 -------------------------------
 其他说明：
 

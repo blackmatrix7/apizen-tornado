@@ -35,6 +35,13 @@ ApiZen Type Hints 使用的自定义类型
 """
 
 
+class Typed:
+
+    @staticmethod
+    def convert(*, value):
+        return value
+
+
 class TypeMeta(type):
 
     def __init__(cls,  classname, supers, clsdict):
