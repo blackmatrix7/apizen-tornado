@@ -6,7 +6,6 @@
 # @Blog : http://www.cnblogs.com/blackmatrix/
 # @File : config.py
 # @Software: PyCharm
-from collections import UserDict
 """
 -------------------------------
 ApiZen 接口版本的注册、管理与继承功能
