@@ -5,7 +5,7 @@
 # @Site    : 
 # @File    : exception.py
 # @Software: PyCharm
-from apizen.exceptions import SysException
+from apizen import SysException
 
 
 # API 子系统（业务）层级执行结果，以2000开始

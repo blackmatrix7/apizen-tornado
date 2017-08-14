@@ -16,7 +16,7 @@ from config import current_config
 from webapi.tasks import async_webapi
 from webapi.handler import ApiBaseHandler
 from tornado.web import MissingArgumentError
-from apizen.exceptions import ApiSysExceptions, SysException
+from apizen import ApiSysExceptions, SysException
 
 __author__ = 'matrix'
 

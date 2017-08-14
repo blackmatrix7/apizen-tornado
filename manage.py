@@ -11,12 +11,12 @@ import socket
 import logging
 import tornado.web
 from tookit.router import Route
+from apizen import ApiZenManager
 from tornado.ioloop import IOLoop
 from config import current_config
 from tookit.cmdline import cmdline
 from bootloader import torconf, cache
 from tornado.httpserver import HTTPServer
-from apizen.manager import ApiZenManager
 from tookit.session import MemcacheSessionStore
 from tornado.options import define, parse_command_line, options
 
