@@ -64,3 +64,6 @@ if __name__ == '__main__':
 
     if cmdline.command == 'runserver':
         runserver()
+    elif cmdline.command == 'runcelery':
+        from runcelery import app
+        app.start(argv=['celery', 'worker', '-l', 'info'])
