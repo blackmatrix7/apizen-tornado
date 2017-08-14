@@ -35,13 +35,6 @@ ApiZen Type Hints 使用的自定义类型
 """
 
 
-class Typed:
-
-    @staticmethod
-    def convert(*, value):
-        return value
-
-
 class TypeMeta(type):
 
     def __init__(cls,  classname, supers, clsdict):
@@ -228,6 +221,7 @@ def convert(key, value, default_value, type_hints):
         str: String,
         list: List,
         dict: Dict,
+        date: Date,
         datetime: DateTime
     }.get(type_hints, type_hints)
     try:
