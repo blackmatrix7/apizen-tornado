@@ -7,7 +7,7 @@
 # @Software: PyCharm
 import os
 from tookit.cmdline import cmdline
-from apizen.config import ConfigMixin, BaseConfig
+from apizen.config import BaseConfig
 __author__ = 'blackmatrix'
 
 
