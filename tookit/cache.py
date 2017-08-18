@@ -7,10 +7,13 @@
 # @Software: PyCharm
 import pickle
 import hashlib
+import unittest
 from memcache import Client
 from functools import wraps
-from collections import deque
 from inspect import signature
+from config import current_config
+from collections import deque, OrderedDict
+
 __author__ = 'blackmatrix'
 
 SERVER_MAX_KEY_LENGTH = 250
@@ -139,20 +142,14 @@ class Cache(Client):
                 # 获取函数参数并创建签名
                 args_sig = self._create_args_sig(func, func_params, *args, **kwargs)
                 # 从缓存里获取数据
-                func_cache = self.get(key) or {}
+                func_cache = self.get(key) or OrderedDict()
                 # 通过函数签名判断函数是否被进行过修改, 如果进行过修改，不能读取缓存的数据
                 result = func_cache.get(args_sig, _NO_VALUE)
-                # 获取缓存中的双端队列
-                queue = func_cache.get('queue', deque())
-                # 超出限制大小则删除最早的缓存
-                if len(queue) >= maxsize and args_sig not in queue:
-                    del_key = queue.popleft()
-                    if del_key in func_cache:
-                        del func_cache[del_key]
-                if args_sig in queue:
-                    queue.remove(args_sig)
-                queue.append(args_sig)
-                func_cache.update({'queue': queue})
+                # 超出限制大小则删除最早的缓存，统计大小时需要排除lru这个key
+                if len(func_cache) >= maxsize and args_sig not in func_cache:
+                    func_cache.popitem(last=False)
+                if args_sig in func_cache:
+                    func_cache.move_to_end(args_sig)
                 if result == _NO_VALUE:
                     result = func(*args, **kwargs)
                     # 保存函数执行结果
@@ -183,74 +180,7 @@ class Cache(Client):
 
 
 if __name__ == '__main__':
-    from random import randint
-
-    print('初始化缓存客户端')
-
-    cache = Cache(servers=['127.0.0.1:11211'], key_prefix='hello')
-
-    @cache.cached('test_cache')
-    def get_random():
-        return randint(1, 999)
-
-    print('调用函数并将结果缓存')
-    print(get_random())
-    print('再调用三次也是同样的值')
-    print(get_random())
-    print(get_random())
-    print(get_random())
-    print('删除缓存')
-    cache.delete('test_cache')
-    print('重新调用函数，值变化')
-    print(get_random())
-
-    @cache.cached('test_value')
-    def get_value(a, b, c, d, *args):
-        # 相同的参数，只有第一次被执行！
-        print('函数 get_value 被执行！')
-        return a, b, c, d, args
-
-    @cache.cached('test_list')
-    def get_list(alist):
-        return [item for item in alist]
-
-    class Spam:
-        pass
-
-    print('只有第一次调用函数时会执行')
-    print(get_value(1, 2, 3, 4))
-    print(get_value(1, 2,  3, d=4))
-    print(get_value(1, 2, c=3, d=4))
-    print(get_value(1, 2, d=4, c=3))
-    print(get_value(a=1, b=2, c=3, d=4))
-    print(get_value(d=4, c=3, b=2, a=1))
-    cache.delete('test_value')
-
-    print(get_list(['a', '2', {'a': 1}, 4, [1], ('b', ), Spam()]))
-    print(get_list(['a', '2', {'a': 1}, 4, [1], ('b', ), Spam()]))
-    print(get_list(['b', '3', {'c': 2}, 5, [2], ('c', ), Spam]))
-
-    @cache.cached('test_lru', maxsize=2)
-    def test_lru(a):
-        print('函数被执行')
-        return a
-
-    print(test_lru(1))
-    print(test_lru(2))
-    print(test_lru(1))
-    print(test_lru(1))
-    print(test_lru(1))
-    print(test_lru(1))
-    print(test_lru(4))
-    print(test_lru(5))
-    print(test_lru(1))
-    print(test_lru(1))
-    print(test_lru(1))
-    print(test_lru(5))
-    print(test_lru(4))
-
-
-
+    pass
 
 
 
