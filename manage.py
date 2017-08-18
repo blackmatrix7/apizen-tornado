@@ -67,3 +67,5 @@ if __name__ == '__main__':
     elif cmdline.command == 'runcelery':
         from runcelery import app
         app.start(argv=['celery', 'worker', '-l', 'info'])
+    elif cmdline.command == 'delcaches':
+        cache.flush_all()
