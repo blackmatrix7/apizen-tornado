@@ -7,12 +7,10 @@
 # @Software: PyCharm
 import pickle
 import hashlib
-import unittest
 from memcache import Client
 from functools import wraps
 from inspect import signature
-from config import current_config
-from collections import deque, OrderedDict
+from collections import OrderedDict
 
 __author__ = 'blackmatrix'
 
@@ -26,26 +24,25 @@ _NO_VALUE = object()
 class Cache(Client):
 
     """
-    一个基于Python3-Memcached的简单缓存操作类
-    主要解决的是当不同的环境使用同一memcached服务器时，
-    带来的数据竞态问题。
+    基于Python3-Memcached轻度封装的缓存操作类
     """
 
     def __init__(self, *, config=None, servers: list = None, key_prefix: str='',
-                 debug=0, pickleProtocol=0, pickler=pickle.Pickler, unpickler=pickle.Unpickler,
+                 debug=False, pickle_protocol=0, pickler=pickle.Pickler, unpickler=pickle.Unpickler,
                  pload=None, pid=None, server_max_key_length=SERVER_MAX_KEY_LENGTH,
                  server_max_value_length=SERVER_MAX_VALUE_LENGTH, dead_retry=_DEAD_RETRY,
                  socket_timeout=_SOCKET_TIMEOUT, cache_cas=False, flush_on_reconnect=0,
                  check_keys=True):
         if config:
+            self.debug = config.get('DEBUG', False)
+            self.key_prefix = config.get('CACHE_KEY_PREFIX', '')
             self.servers = config['CACHE_MEMCACHED_SERVERS']
-            self.key_prefix = config['CACHE_KEY_PREFIX']
-            self.debug = config['DEBUG']
         else:
-            self.servers = servers
+            self.debug = debug
             self.key_prefix = key_prefix
+            self.servers = servers
 
-        super().__init__(servers=self.servers, debug=debug, pickleProtocol=pickleProtocol,
+        super().__init__(servers=self.servers, debug=self.debug, pickleProtocol=pickle_protocol,
                          pickler=pickler, unpickler=unpickler, pload=pload, pid=pid,
                          server_max_key_length=server_max_key_length,
                          server_max_value_length=server_max_value_length, dead_retry=dead_retry,
@@ -103,35 +100,42 @@ class Cache(Client):
         keys = ['{0}{1}'.format(self.key_prefix, key) for key in keys]
         return super().get_multi(keys, key_prefix=key_prefix)
 
+    def delete_multi(self, keys, time=0, key_prefix=''):
+        keys = ['{0}{1}'.format(self.key_prefix, key) for key in keys]
+        return super().delete_multi(keys=keys, time=time, key_prefix=key_prefix)
+
     def check_key(self, key, key_extra_len=0):
         key = '{0}{1}'.format(self.key_prefix, key)
         return super().check_key(key=key, key_extra_len=key_extra_len)
 
     @staticmethod
     def _create_args_sig(func, params,  *args,  **kwargs):
-        # 函数名称
-        func_name = func.__name__ if callable(func) else func
-        args_count = len(args)
-        # 复制一份函数参数列表，避免对外部数据的修改
-        args = list(args)
-        # 将 POSITIONAL_OR_KEYWORD 的参数转换成 k/w 的形式
-        if args:
-            for index, (key, value) in enumerate(params.items()):
-                if str(value.kind) == 'POSITIONAL_OR_KEYWORD':
-                    if index < args_count:
-                        kwargs.update({key: args.pop(0)})
-        # 对参数进行排序
-        args.extend(({k: kwargs[k]} for k in sorted(kwargs.keys())))
-        func_args = '{0}{1}'.format(func_name, pickle.dumps(args))
-        args_sig = hashlib.sha256(func_args.encode()).hexdigest()
-        return args_sig
+        args_sig = None
+        try:
+            # 函数名称
+            func_name = func.__name__ if callable(func) else func
+            args_count = len(args)
+            # 复制一份函数参数列表，避免对外部数据的修改
+            args = list(args)
+            # 将 POSITIONAL_OR_KEYWORD 的参数转换成 k/w 的形式
+            if args:
+                for index, (key, value) in enumerate(params.items()):
+                    if str(value.kind) == 'POSITIONAL_OR_KEYWORD':
+                        if index < args_count:
+                            kwargs.update({key: args.pop(0)})
+            # 对参数进行排序
+            args.extend(({k: kwargs[k]} for k in sorted(kwargs.keys())))
+            func_args = '{0}{1}'.format(func_name, pickle.dumps(args))
+            args_sig = hashlib.sha256(func_args.encode()).hexdigest()
+        finally:
+            return args_sig
 
-    def cached(self, key, timeout=36000, maxsize=20):
+    def cached(self, key, timeout=36000, maxsize=30):
         """
         函数装饰器，装饰到函数上时，会优先返回缓存的值
-        :param key:
-        :param timeout:
-        :param maxsize:
+        :param key: memcached key
+        :param timeout: 超时时间，单位秒
+        :param maxsize: 最多缓存的数量，因为每次不同参数的函数调用都会生成对应的缓存，控制数量避免占用过多内存
         :return:
         """
         def _cached(func):
@@ -143,14 +147,14 @@ class Cache(Client):
                 args_sig = self._create_args_sig(func, func_params, *args, **kwargs)
                 # 从缓存里获取数据
                 func_cache = self.get(key) or OrderedDict()
-                # 通过函数签名判断函数是否被进行过修改, 如果进行过修改，不能读取缓存的数据
+                # 将签名作为key，读取缓存中的函数执行结果
                 result = func_cache.get(args_sig, _NO_VALUE)
                 # 超出限制大小则删除最早的缓存，统计大小时需要排除lru这个key
                 if len(func_cache) >= maxsize and args_sig not in func_cache:
                     func_cache.popitem(last=False)
                 if args_sig in func_cache:
                     func_cache.move_to_end(args_sig)
-                if result == _NO_VALUE:
+                if args_sig is None or result == _NO_VALUE:
                     result = func(*args, **kwargs)
                     # 保存函数执行结果
                     func_cache.update({args_sig: result})
@@ -181,6 +185,5 @@ class Cache(Client):
 
 if __name__ == '__main__':
     pass
-
 
 
