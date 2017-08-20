@@ -6,7 +6,7 @@
 # @File: controller.py
 # @Software: PyCharm
 from functools import wraps
-from apizen.method import raw_response
+from apizen.method import apiconfig
 from webapi.exceptions import ApiSubExceptions
 from apizen.schema import Integer, String, Float, Dict, DateTime, Email, List, Bool, Date, Money
 
@@ -115,7 +115,7 @@ def custom_error():
 
 
 # 保留原始返回格式
-@raw_response
+@apiconfig(raw_resp=True)
 def raw_data():
     return {'id': 1, 'message': '保留原始返回格式'}
 
