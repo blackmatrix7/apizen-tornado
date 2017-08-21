@@ -33,6 +33,8 @@ class DemoApiMethods(ApiMethodsBase):
         'matrix.api.return-err': {'func': raise_error},
         # 自定义一个异常信息
         'matrix.api.custom-error': {'func': custom_error},
+        # 自定义一个异常信息
+        'matrix.api.after-custom-error': {'func': after_custom_error},
         # 保留原始返回格式
         'matrix.api.raw_response': {'func': raw_data},
         # 只允许GET请求

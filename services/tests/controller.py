@@ -108,10 +108,21 @@ def raise_error():
 def custom_error():
     """
     接口抛出异常的使用说明，抛出异常信息后，会在返回接口的code中显示对应异常的编号，
-    同时，返回的http code 也会根据异常配置中的status_code而改变
+    同时，返回的http code 也会根据异常配置中的 http_code 而改变
     :return:  返回异常信息
     """
     raise ApiSubExceptions.unknown_error('这是一个自定义异常信息')
+
+
+# 测试自定义异常信息后，对其他地方调用的影响
+def after_custom_error():
+    """
+    接口抛出异常的使用说明，抛出异常信息后，会在返回接口的code中显示对应异常的编号，
+    同时，返回的http code 也会根据异常配置中的 http_code 而改变
+    :return:  返回异常信息
+    """
+    ApiSubExceptions.unknown_error('测试自定义异常信息后，对其他地方调用的影响')
+    raise ApiSubExceptions.unknown_error
 
 
 # 保留原始返回格式
