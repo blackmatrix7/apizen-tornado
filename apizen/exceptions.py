@@ -21,19 +21,11 @@ ApiZen 接口异常类型的管理模块
 _no_value = object()
 
 
-class SysException(Exception):
+class ExceptionMixin:
 
     """
-    以描述符进行异常管理：
-    禁止对已经设定的异常信息进行修改
-    读取异常信息时，每次实例化一个全新的异常实例，避免对异常信息的修改影响全局
+    异常混入类，实现描述符协议
     """
-
-    def __init__(self, err_code, err_msg, http_code=500, err_type=Exception):
-        self.err_msg = err_msg
-        self.ex_type = err_type
-        self.err_code = err_code
-        self.http_code = http_code
 
     def __set__(self, instance, value):
         raise AttributeError('禁止修改异常设定')
@@ -59,6 +51,21 @@ class SysException(Exception):
         if http_code is not _no_value:
             self.http_code = http_code
         return self
+
+
+class SysException(Exception, ExceptionMixin):
+
+    """
+    以描述符进行异常管理：
+    禁止对已经设定的异常信息进行修改
+    读取异常信息时，每次实例化一个全新的异常实例，避免对异常信息的修改影响全局
+    """
+
+    def __init__(self, err_code, err_msg, http_code=500, err_type=Exception):
+        self.err_msg = err_msg
+        self.ex_type = err_type
+        self.err_code = err_code
+        self.http_code = http_code
 
 
 # API 系统层面异常信息
