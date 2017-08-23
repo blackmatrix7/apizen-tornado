@@ -10,9 +10,9 @@ from apizen import SysException
 
 # API 子系统（业务）层级执行结果，以2000开始
 class ApiSubExceptions:
-    empty_result = SysException(err_code=2000, http_code=200, err_msg='查询结果为空', err_type=Exception)
-    unknown_error = SysException(err_code=2001, http_code=500, err_msg='未知异常', err_type=Exception)
-    other_error = SysException(err_code=2002, http_code=500, err_msg='其它异常', err_type=Exception)
+    empty_result = SysException(err_code=2000, http_code=200, err_msg='查询结果为空')
+    unknown_error = SysException(err_code=2001, http_code=500, err_msg='未知异常')
+    other_error = SysException(err_code=2002, http_code=500, err_msg='其它异常')
 
 if __name__ == '__main__':
     pass
