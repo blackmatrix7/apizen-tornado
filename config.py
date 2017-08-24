@@ -57,7 +57,7 @@ class CommonConfig(BaseConfig):
     CELERY_RESULT_BACKEND = CELERY_BROKER_URL
     CELERY_ACCEPT_CONTENT = ['json', 'pickle']
     CELERY_TASK_SERIALIZER = 'json'
-    CELERY_RESULT_SERIALIZER = 'json'
+    CELERY_RESULT_SERIALIZER = 'pickle'
     CELERY_REDIRECT_STDOUTS_LEVEL = 'INFO'
     CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
     CELERY_IMPORTS = ('webapi.tasks', 'webapi.methods')
