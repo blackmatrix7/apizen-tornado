@@ -11,10 +11,10 @@ import tornado.gen
 import tornado.web
 from runcelery import app
 from tookit.router import route
+from config import current_config
 from apizen.manager import async
 from json import JSONDecodeError
 from apizen.schema import convert
-from config import current_config
 from apizen.method import get_method
 from inspect import Parameter, signature
 from webapi.handler import ApiBaseHandler
@@ -35,6 +35,7 @@ class WebApiRoute(ApiBaseHandler):
         api_code = 1000
         api_msg = '执行成功'
         http_code = 200
+        err_type = None
         result = None
 
         try:
@@ -66,15 +67,17 @@ class WebApiRoute(ApiBaseHandler):
             api_code = ex.err_code
             api_msg = ex.err_msg
             http_code = ex.http_code
+            err_type = ex.err_type
             result = None
         except Exception:
             ex = ApiSysExceptions.system_error
             api_code = ex.err_code
             api_msg = ex.err_msg
             http_code = ex.http_code
+            err_type = ex.ex_type
             result = None
         finally:
-            return result, api_code, api_msg, http_code
+            return result, api_code, api_msg, http_code, err_type
 
     def get(self):
         self.handler()
@@ -122,10 +125,10 @@ class WebApiRoute(ApiBaseHandler):
         else:
             retdata = self.async_webapi(method=self._method, v=self._v, http_method=self.request.method, args=self.request_args)
 
-        self.result, self.api_code, self.api_msg, self.http_code,  = retdata
+        self.result, self.api_code, self.api_msg, self.http_code, self.err_type = retdata
 
         if self.api_code != 1000:
-            raise SysException(err_code=self.api_code, err_msg=self.api_msg, http_code=self.http_code)
+            raise SysException(err_code=self.api_code, err_msg=self.api_msg, http_code=self.http_code, err_type=self.err_type)
         else:
             resp = {
                 'meta': {

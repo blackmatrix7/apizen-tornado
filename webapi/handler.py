@@ -65,6 +65,7 @@ class ApiBaseHandler(SysBaseHandler):
         self.api_code = 1000
         self.api_msg = '执行成功'
         self.http_code = 200
+        self.err_type = None
         SysBaseHandler.__init__(self, application, request, **kwargs)
 
     def write(self, chunk):
