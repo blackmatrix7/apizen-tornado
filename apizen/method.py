@@ -5,7 +5,6 @@
 # @Site    :
 # @File    : controller.py
 # @Software: PyCharm
-from inspect import unwrap
 from functools import wraps
 from .schema import convert
 from .version import allversion
@@ -14,23 +13,27 @@ from .exceptions import ApiSysExceptions
 
 __author__ = 'blackmatrix'
 
-'''
-接口处理方法的异常判断与执行
-'''
+"""
+-------------------------------
+ApiZen 接口处理方法的异常判断与执行
+-------------------------------
+适用版本：Flask、Tornado
+"""
 
 
-def raw_response(func):
+def apiconfig(raw_resp=False):
     """
-    装饰器，表示接口处理函数返回的值不需要统一的返回格式
-    :param func: 装饰的函数
+    Api配置装饰器
+    :param raw_resp: 是否保留原始返回格式，默认不保留。
     :return:
     """
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        return func(*args, **kwargs)
-
-    wrapper.raw_response = True
-    return wrapper
+    def _apiconfig(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            return func(*args, **kwargs)
+        wrapper.__rawresp__ = raw_resp
+        return wrapper
+    return _apiconfig
 
 
 # 获取api处理函数及相关异常判断
@@ -42,16 +45,6 @@ def get_method(version, api_method, http_method):
     :param http_method:  http请求方式
     :return:
     """
-    raw_resp = False
-    allow_anonymous = False
-
-    def check_decorator(func):
-        nonlocal raw_resp
-        nonlocal allow_anonymous
-        if hasattr(func, 'raw_response') and func.raw_response is True:
-            raw_resp = True
-        if hasattr(func, 'allow_anonymous') and func.allow_anonymous is True:
-            allow_anonymous = True
 
     # 检查版本号
     if version not in allversion:
@@ -77,10 +70,10 @@ def get_method(version, api_method, http_method):
 
     _func = methods[api_method].get('func')
 
-    # 解包，检查是否有不统一格式化输出的装饰器，或允许匿名访问情况
-    unwrap(_func, stop=check_decorator)
+    if not hasattr(_func, '__rawresp__'):
+        _func.__rawresp__ = False
 
-    return _func, raw_resp, allow_anonymous
+    return _func
 
 
 # 运行接口处理方法，及异常处理
@@ -88,8 +81,6 @@ def run_method(api_method, request_params):
 
     # 最终传递给接口处理方法的全部参数
     func_args = {}
-    if hasattr(api_method, 'format_retinfo') and api_method.format_retinfo:
-        print(True)
     # 获取函数方法的参数
     api_method_params = signature(api_method).parameters
 

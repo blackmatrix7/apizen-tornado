@@ -1,13 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# @Time : 2017/5/28 21:49
-# @Author : BlackMatrix
-# @Site :
+# @Time : 2017/8/4 上午11:03
+# @Author : Matrix
+# @Github : https://github.com/blackmatrix7/
+# @Blog : http://www.cnblogs.com/blackmatrix/
 # @File : __init__.py
 # @Software: PyCharm
-from apizen.manager import ApiZenManager
-
-
-__all__ = [ApiZenManager]
+from .manager import ApiZenManager
+from .method import get_method, run_method
+from .version import version, ApiMethodsBase
+from .config import default_config, current_config
+from .exceptions import ApiSysExceptions, SysException
 
 __author__ = 'blackmatrix'

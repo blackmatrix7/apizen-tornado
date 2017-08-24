@@ -15,12 +15,12 @@ class CmdLine:
     @property
     def config(self):
         args = sys.argv
-        return args[1] if len(args) > 2 else 'default'
+        return args[1] if len(args) >= 2 else 'default'
 
     @property
     def command(self):
         args = sys.argv
-        return args[2] if len(args) > 3 else 'runserver'
+        return args[2] if len(args) >= 3 else 'runserver'
 
 cmdline = CmdLine()
 

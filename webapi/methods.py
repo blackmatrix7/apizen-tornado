@@ -5,7 +5,7 @@
 # @Site:
 # @File: methods.py
 # @Software: PyCharm
-from apizen.version import ApiMethodsBase, version
+from apizen import ApiMethodsBase, version
 from services.tests.methods import DemoApiMethods
 
 __author__ = 'matrix'

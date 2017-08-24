@@ -5,30 +5,17 @@
 # @Site: https://github.com/blackmatrix7
 # @File: config.py
 # @Software: PyCharm
+import os
 from tookit.cmdline import cmdline
-
+from apizen.config import BaseConfig
 __author__ = 'blackmatrix'
 
 
-class ConfigMixin:
-
-    def __setitem__(self, key, value):
-        raise AttributeError
-
-    def __delitem__(self, key):
-        raise AttributeError
-
-    def __getitem__(self, item):
-        return getattr(self, item)
-
-    def get(self, item, value=None):
-        return getattr(self, item, value)
-
-
-class BaseConfig(ConfigMixin):
+class CommonConfig(BaseConfig):
 
     DEBUG = True
     TESTING = True
+    ASYNC = False
 
     HOST = '127.0.0.1'
     PORT = 8011
@@ -39,7 +26,7 @@ class BaseConfig(ConfigMixin):
     # cookie
     COOKIE_SECRET = '@r3K8mktcn*j5T#^M@qWZJ&tVy!9Spjz'
 
-    # login
+    # login匹配
     LOGIN_URL = '/signin'
 
     # 数据库配置
@@ -65,12 +52,27 @@ class BaseConfig(ConfigMixin):
     CACHE_MEMCACHED_SERVERS = ['127.0.0.1:11211']
     CACHE_KEY_PREFIX = 'default'
 
+    # Celery
+    CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL')
+    CELERY_RESULT_BACKEND = CELERY_BROKER_URL
+    CELERY_ACCEPT_CONTENT = ['json', 'pickle']
+    CELERY_TASK_SERIALIZER = 'json'
+    CELERY_RESULT_SERIALIZER = 'pickle'
+    CELERY_REDIRECT_STDOUTS_LEVEL = 'INFO'
+    CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
+    CELERY_IMPORTS = ('webapi.tasks', 'webapi.methods')
+    # celery worker 的并发数
+    CELERYD_CONCURRENCY = 3
+    # 默认队列
+    CELERY_DEFAULT_QUEUE = 'celery@apizen.default'
+
 
 # 开发环境配置
-class DevConfig(BaseConfig):
+class DevConfig(CommonConfig):
 
     DEBUG = True
-    TESTING = True
+    TESTING = False
+    ASYNC = False
 
     # Cache
     CACHE_KEY_PREFIX = 'debug'
@@ -80,10 +82,11 @@ class DevConfig(BaseConfig):
 
 
 # 测试环境配置
-class TestConfig(BaseConfig):
+class TestConfig(CommonConfig):
 
     DEBUG = False
     TESTING = True
+    ASYNC = False
 
     # Cache
     CACHE_KEY_PREFIX = 'test'
@@ -93,13 +96,16 @@ class TestConfig(BaseConfig):
 
 
 # 生产环境配置
-class ProdConfig(BaseConfig):
+class ProdConfig(CommonConfig):
 
     DEBUG = False
     TESTING = False
+    ASYNC = True
 
     # Cache
     CACHE_KEY_PREFIX = 'master'
+    # 默认队列
+    CELERY_DEFAULT_QUEUE = 'celery@apizen.prod'
 
     # Port
     PORT = 8013
@@ -116,4 +122,9 @@ configs = {
     'default': devcfg
 }
 
-config = configs[cmdline.config]
+config_name = cmdline.config
+try:
+    import localconfig
+    current_config = localconfig.configs[config_name]
+except ImportError:
+    current_config = configs[config_name]

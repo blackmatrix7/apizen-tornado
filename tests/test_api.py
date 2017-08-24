@@ -19,7 +19,7 @@ class ApiZenTestCase(unittest.TestCase):
             host=self.api_host, version=self.api_version,  method=self.api_method)
 
     def setUp(self):
-        self.api_host = 'http://127.0.0.1:8012/api/router/rest'
+        self.api_host = 'http://127.0.0.1:8013/api/router/rest'
         self.api_version = '1.0'
         self.api_method = 'matrix.api.first-api'
 
@@ -206,6 +206,14 @@ class ApiZenTestCase(unittest.TestCase):
         data = resp.json()
         assert data['meta']['message'] == '这是一个自定义异常信息'
 
+    # 测试自定义异常内容
+    def test_after_custom_error(self):
+        self.api_method = 'matrix.api.after-custom-error'
+        resp = requests.get(self.request_url)
+        assert resp.status_code == 500
+        data = resp.json()
+        assert data['meta']['message'] == '未知异常'
+
     # # 测试保留原始返回结果
     # def test_raw_data(self):
     #     self.api_method = 'matrix.api.raw_response'
@@ -292,14 +300,6 @@ class ApiZenTestCase(unittest.TestCase):
         assert data['meta']['message'] == '接口版本已停用'
         # 恢复正常的版本号
         self.api_version = '1.0'
-
-    # 测试错误的api配置
-    def test_error_api_config(self):
-        self.api_method = 'matrix.api.err-api'
-        resp = requests.get(self.request_url)
-        assert resp.status_code == 500
-        data = resp.json()
-        assert data['meta']['message'] == '错误的API配置'
 
     # 测试布尔值类型
     def test_is_bool(self):

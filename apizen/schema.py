@@ -9,15 +9,21 @@ import re
 import json
 import copy
 from decimal import Decimal
-from configs import config
 from json import JSONDecodeError
+from .config import current_config
 from datetime import datetime, date
 from .exceptions import ApiSysExceptions
-from .config import APIZEN_DATE_FMT, APIZEN_DATETIME_FMT
 
 __author__ = 'blackmatrix'
 
 """
+-------------------------------
+ApiZen Type Hints 使用的自定义类型
+-------------------------------
+适用版本：Flask、Tornado
+-------------------------------
+其他说明：
+
 继承自某个内建类型，是为了解决Pycharm关于type hints的警告。
 比如在一个函数中，type hints 使用自定义的DateTime，然后在函数内部使用了obj.year的方法，
 因为DateTime本身与内建的datetime类型没有继承关系，并且没有year属性，Pycharm就会提示DateTime类型没有year属性的警告。
@@ -116,12 +122,8 @@ class TypeDate(date, TypeBase):
         return _value
 
     def __init__(self, format_=None):
-        try:
-            self.format_ = format_ or config.get('APIZEN_DATE_FMT', APIZEN_DATE_FMT)
-        except (KeyError, ImportError):
-            self.format_ = APIZEN_DATE_FMT
-        finally:
-            super().__init__()
+        self.format_ = format_ or current_config['APIZEN_DATE_FMT']
+        super().__init__()
 
 
 class TypeDatetime(datetime, TypeBase):
@@ -133,12 +135,8 @@ class TypeDatetime(datetime, TypeBase):
         return _value
 
     def __init__(self, format_=None):
-        try:
-            self.format_ = format_ or config.get('APIZEN_DATETIME_FMT', APIZEN_DATETIME_FMT)
-        except (KeyError, ImportError):
-            self.format_ = APIZEN_DATETIME_FMT
-        finally:
-            super().__init__()
+        self.format_ = format_ or current_config.get('APIZEN_DATETIME_FMT')
+        super().__init__()
 
 
 class TypeBool(bool, TypeBase):
@@ -230,6 +228,7 @@ def convert(key, value, default_value, type_hints):
         str: String,
         list: List,
         dict: Dict,
+        date: Date,
         datetime: DateTime
     }.get(type_hints, type_hints)
     try:

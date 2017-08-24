@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 # @Time  : 2017/5/19 上午8:54
 # @Author : Matrix
-# @Site :
+# @Github : https://github.com/blackmatrix7/
+# @Blog : http://www.cnblogs.com/blackmatrix/
 # @File : exceptions.py
 # @Software: PyCharm
 import types
@@ -10,9 +11,12 @@ from json import JSONDecodeError
 
 __author__ = 'blackmatrix'
 
-'''
-接口异常类型的管理与继承
-'''
+"""
+-------------------------------
+ApiZen 接口异常类型的管理模块
+-------------------------------
+适用版本：Flask、Tornado
+"""
 
 _no_value = object()
 
@@ -27,7 +31,7 @@ class SysException(Exception):
 
     def __init__(self, err_code, err_msg, http_code=500, err_type=Exception):
         self.err_msg = err_msg
-        self.ex_type = err_type
+        self.err_type = err_type
         self.err_code = err_code
         self.http_code = http_code
 
@@ -35,8 +39,8 @@ class SysException(Exception):
         raise AttributeError('禁止修改异常设定')
 
     def __get__(self, instance, owner):
-        supers = (SysException, self.ex_type, Exception) \
-            if self.ex_type and self.ex_type is not Exception else (SysException, Exception)
+        supers = (SysException, self.err_type, Exception) \
+            if self.err_type and self.err_type is not Exception else (SysException, Exception)
         api_ex_cls = types.new_class('SysException', supers, {}, lambda ns: ns)
         api_ex = api_ex_cls(err_msg=self.err_msg, err_code=self.err_code, http_code=self.http_code)
         return api_ex

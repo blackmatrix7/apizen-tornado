@@ -1,17 +1,22 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# @Time    : 2017/5/19 上午8:56
-# @Author  : Matrix
-# @Site    : 
-# @File    : version.py
+# @Time : 2017/8/4 上午11:03
+# @Author : Matrix
+# @Github : https://github.com/blackmatrix7/
+# @Blog : http://www.cnblogs.com/blackmatrix/
+# @File : version.py
 # @Software: PyCharm
 import copy
 
 __author__ = 'blackmatrix'
 
-'''
-接口版本的注册、管理与继承功能。
-'''
+"""
+-------------------------------
+ApiZen 接口版本的注册、管理与继承功能
+-------------------------------
+适用版本：Flask、Tornado
+-------------------------------
+"""
 
 allversion = {}
 

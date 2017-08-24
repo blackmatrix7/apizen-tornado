@@ -33,6 +33,8 @@ class DemoApiMethods(ApiMethodsBase):
         'matrix.api.return-err': {'func': raise_error},
         # 自定义一个异常信息
         'matrix.api.custom-error': {'func': custom_error},
+        # 自定义一个异常信息
+        'matrix.api.after-custom-error': {'func': after_custom_error},
         # 保留原始返回格式
         'matrix.api.raw_response': {'func': raw_data},
         # 只允许GET请求
@@ -43,8 +45,6 @@ class DemoApiMethods(ApiMethodsBase):
         'matrix.api.get-post': {'func': first_api},
         # 停用API
         'matrix.api.api-stop': {'func': first_api, 'enable': False},
-        # 错误的API配置
-        'matrix.api.err-api': {'func': first_api()},
         # 布尔值类型
         'matrix.api.is-bool': {'func': is_bool},
         # 错误的函数编写
@@ -56,7 +56,9 @@ class DemoApiMethods(ApiMethodsBase):
         # 传递任意参数
         'matrix.api.send-kwargs': {'func': demo.send_kwargs},
         # API版本继承
-        'matrix.api.raise-error': {'func': raise_error}
+        'matrix.api.raise-error': {'func': raise_error},
+        # 模拟接口阻塞
+        'matrix.api.sleep': {'func': sleep_seconds}
     }
 
 if __name__ == '__main__':

@@ -6,7 +6,7 @@
 # @File    : handler.py
 # @Software: PyCharm
 import json
-from configs import config
+from config import current_config
 from decimal import Decimal
 from tornado.escape import utf8
 from datetime import datetime, date
@@ -23,9 +23,9 @@ class CustomJSONEncoder(json.JSONEncoder):
     def default(self, obj):
         try:
             if isinstance(obj, datetime):
-                return obj.strftime(config.get('DATETIME_FMT'))
+                return obj.strftime(current_config.get('DATETIME_FMT'))
             elif isinstance(obj, date):
-                return obj.strftime(config.get('DATE_FMT'))
+                return obj.strftime(current_config.get('DATE_FMT'))
             elif isinstance(obj, Decimal):
                 # 不转换为float是为了防止精度丢失
                 return str(obj)
@@ -53,13 +53,19 @@ class SysBaseHandler(BaseHandler):
 class ApiBaseHandler(SysBaseHandler):
 
     def __init__(self, application, request, **kwargs):
-        self._access_token = None
+        # 请求参数
         self._method = None
-        self._app_key = None
-        self._sign = None
-        self._timestamp = None
         self._v = None
         self._format = 'json'
+        self.content_type = ''
+        self.request_args = {}
+        self.resp = {}
+        self.result = None
+        # 返回参数
+        self.api_code = 1000
+        self.api_msg = '执行成功'
+        self.http_code = 200
+        self.err_type = None
         SysBaseHandler.__init__(self, application, request, **kwargs)
 
     def write(self, chunk):
