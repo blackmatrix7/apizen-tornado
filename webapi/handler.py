@@ -60,6 +60,7 @@ class ApiBaseHandler(SysBaseHandler):
         self.content_type = ''
         self.request_args = {}
         self.resp = {}
+        self.result = None
         # 返回参数
         self.api_code = 1000
         self.api_msg = '执行成功'

@@ -67,21 +67,14 @@ class WebApiRoute(ApiBaseHandler):
             api_msg = ex.err_msg
             http_code = ex.http_code
             result = None
-        except Exception as sys_ex:
+        except Exception:
             ex = ApiSysExceptions.system_error
             api_code = ex.err_code
             api_msg = ex.err_msg
             http_code = ex.http_code
             result = None
         finally:
-            resp = {
-                'meta': {
-                    'code': api_code,
-                    'message': api_msg,
-                },
-                'response': result
-            }
-            return resp, http_code
+            return result, api_code, api_msg, http_code
 
     def get(self):
         self.handler()
@@ -129,11 +122,21 @@ class WebApiRoute(ApiBaseHandler):
         else:
             retdata = self.async_webapi(method=self._method, v=self._v, http_method=self.request.method, args=self.request_args)
 
-        self.resp, self.http_code = retdata
+        self.result, self.api_code, self.api_msg, self.http_code,  = retdata
 
-        self.set_header("Access-Control-Allow-Origin", "*")
-        self.set_status(status_code=self.http_code)
-        self.write(self.resp)
+        if self.api_code != 1000:
+            raise SysException(err_code=self.api_code, err_msg=self.api_msg, http_code=self.http_code)
+        else:
+            resp = {
+                'meta': {
+                    'code': self.api_code,
+                    'message': self.api_msg
+                },
+                'response': self.result
+            }
+            self.set_header("Access-Control-Allow-Origin", "*")
+            self.set_status(status_code=self.http_code)
+            self.write(resp)
         self.on_finish()
 
     def write_error(self, status_code, **kwargs):
