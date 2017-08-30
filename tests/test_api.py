@@ -19,7 +19,7 @@ class ApiZenTestCase(unittest.TestCase):
             host=self.api_host, version=self.api_version,  method=self.api_method)
 
     def setUp(self):
-        self.api_host = 'http://127.0.0.1:8013/api/router/rest'
+        self.api_host = 'http://127.0.0.1:8012/api/router/rest'
         self.api_version = '1.0'
         self.api_method = 'matrix.api.first-api'
 
@@ -319,6 +319,17 @@ class ApiZenTestCase(unittest.TestCase):
         assert resp.status_code == 400
         data = resp.json()
         assert data['meta']['message'] == '参数类型错误：value <Bool>'
+
+    # 测试接口版本禁用
+    def test_runtime_error(self):
+        self.api_method = 'matrix.api.runtime-error'
+        self.api_version = '1.0'
+        resp = requests.get(self.request_url)
+        assert resp.status_code == 400
+        data = resp.json()
+        assert data['meta']['message'] == '接口版本已停用'
+        # 恢复正常的版本号
+        self.api_version = '1.0'
 
 
 if __name__ == '__main__':

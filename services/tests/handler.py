@@ -145,6 +145,10 @@ def sleep_seconds(seconds=10):
     time.sleep(seconds)
 
 
+def raise_runtime_error():
+    raise RuntimeError
+
+
 class ApiDemo:
 
     def __init__(self):

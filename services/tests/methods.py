@@ -5,7 +5,7 @@
 # @Site: https://github.com/blackmatrix7
 # @File: methods.py
 # @Software: PyCharm
-from .controller import *
+from .handler import *
 from apizen.version import ApiMethodsBase
 
 __author__ = 'blackmatrix'
@@ -58,7 +58,9 @@ class DemoApiMethods(ApiMethodsBase):
         # API版本继承
         'matrix.api.raise-error': {'func': raise_error},
         # 模拟接口阻塞
-        'matrix.api.sleep': {'func': sleep_seconds}
+        'matrix.api.sleep': {'func': sleep_seconds},
+        # 模拟接口阻塞
+        'matrix.api.runtime-error': {'func': raise_runtime_error}
     }
 
 if __name__ == '__main__':
