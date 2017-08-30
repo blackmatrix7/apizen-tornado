@@ -69,7 +69,9 @@ class WebApiRoute(ApiBaseHandler):
             http_code = ex.http_code
             err_type = ex.err_type
             result = None
-        except Exception:
+        except Exception as ex:
+            if current_config.DEBUG:
+                raise ex
             ex = ApiSysExceptions.system_error
             api_code = ex.err_code
             api_msg = ex.err_msg
