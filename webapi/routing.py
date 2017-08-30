@@ -67,8 +67,8 @@ class WebApiRoute(ApiBaseHandler):
             http_code = ex.http_code
             err_type = ex.err_type
             result = None
-        except Exception as ex:
-            if current_config.DEBUG:
+        except BaseException as ex:
+            if current_config.DEBUG and current_config.ASYNC is False:
                 raise ex
             ex = ApiSysExceptions.system_error
             api_code = ex.err_code
@@ -173,7 +173,8 @@ class WebApiRoute(ApiBaseHandler):
             self.api_msg = error.err_msg
         # 全局异常
         else:
-            if current_config.DEBUG:
+            # debug 模式，并且没有启用celery实现异步时，直接抛出异常，便于调试
+            if current_config.DEBUG and current_config.ASYNC is False:
                 raise error
             else:
                 _api_ex = ApiSysExceptions.system_error()
