@@ -6,9 +6,10 @@
 # @File: controller.py
 # @Software: PyCharm
 from functools import wraps
-from errors import ApiSubExceptions
+
 from apizen.method import apiconfig
 from apizen.schema import Integer, String, Float, Dict, DateTime, Email, List, Bool, Date, Money
+from errors import ApiSubExceptions
 
 __author__ = 'blackmatix'
 
@@ -143,6 +144,10 @@ def is_bool(value: Bool):
 def sleep_seconds(seconds=10):
     import time
     time.sleep(seconds)
+
+
+def raise_runtime_error():
+    raise RuntimeError
 
 
 class ApiDemo:

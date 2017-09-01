@@ -36,7 +36,6 @@ class WebApiRoute(ApiBaseHandler):
         api_msg = '执行成功'
         http_code = 200
         err_type = None
-        result = None
 
         try:
             # 获取接口处理函数，及接口部分配置
@@ -62,22 +61,22 @@ class WebApiRoute(ApiBaseHandler):
                     func_args.update({k: v for k, v in args.items()
                                       if k not in api_method_params.keys()})
             result = api_func(**func_args)
-            return result
         except SysException as ex:
             api_code = ex.err_code
             api_msg = ex.err_msg
             http_code = ex.http_code
             err_type = ex.err_type
             result = None
-        except Exception:
+        except BaseException as ex:
+            if current_config.DEBUG and current_config.ASYNC is False:
+                raise ex
             ex = ApiSysExceptions.system_error
             api_code = ex.err_code
             api_msg = ex.err_msg
             http_code = ex.http_code
-            err_type = ex.ex_type
+            err_type = ex.err_type
             result = None
-        finally:
-            return result, api_code, api_msg, http_code, err_type
+        return result, api_code, api_msg, http_code, err_type
 
     def get(self):
         self.handler()
@@ -125,6 +124,8 @@ class WebApiRoute(ApiBaseHandler):
         else:
             retdata = self.async_webapi(method=self._method, v=self._v, http_method=self.request.method, args=self.request_args)
 
+        if isinstance(retdata, BaseException):
+            raise retdata
         self.result, self.api_code, self.api_msg, self.http_code, self.err_type = retdata
 
         if self.api_code != 1000:
@@ -172,14 +173,15 @@ class WebApiRoute(ApiBaseHandler):
             self.api_msg = error.err_msg
         # 全局异常
         else:
-            if current_config.DEBUG is False:
+            # debug 模式，并且没有启用celery实现异步时，直接抛出异常，便于调试
+            if current_config.DEBUG and current_config.ASYNC is False:
+                raise error
+            else:
                 _api_ex = ApiSysExceptions.system_error()
                 self.api_code = _api_ex.err_code
                 self.http_code = _api_ex.http_code
                 self.api_msg = '{0}：{1}'.format(_api_ex.err_msg, error) \
-                    if current_config.TESTING is True else _api_ex.err_msg
-            else:
-                raise error
+                    if current_config.TESTING else _api_ex.err_msg
 
         retinfo = {
             'meta': {

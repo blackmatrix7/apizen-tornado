@@ -320,6 +320,16 @@ class ApiZenTestCase(unittest.TestCase):
         data = resp.json()
         assert data['meta']['message'] == '参数类型错误：value <Bool>'
 
+    # 测试接口版本禁用
+    def test_runtime_error(self):
+        self.api_method = 'matrix.api.runtime-error'
+        self.api_version = '1.0'
+        resp = requests.get(self.request_url)
+        assert resp.status_code == 500
+        data = resp.json()
+        assert data['meta']['code'] == 1017
+        self.api_version = '1.0'
+
 
 if __name__ == '__main__':
     tests = unittest.TestLoader().discover('test')

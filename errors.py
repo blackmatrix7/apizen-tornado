@@ -19,7 +19,7 @@ class Exceptions(ApiSysExceptions, ApiSubExceptions):
     pass
 
 
-__all__ = [Exceptions, SysException]
+__all__ = (SysException, Exceptions)
 
 if __name__ == '__main__':
     pass

@@ -36,6 +36,7 @@ class ApiZenManager:
             for version in versions:
                 importlib.import_module(version)
 
+    # 复制当前的配置文件到ApiZen
     def copy_current_config(self):
         for k, v in default_config.items():
             set_current_config(k, self.config.get(k, default_config[k]))
