@@ -6,9 +6,10 @@
 # @File: controller.py
 # @Software: PyCharm
 from functools import wraps
+
 from apizen.method import apiconfig
-from webapi.exceptions import ApiSubExceptions
 from apizen.schema import Integer, String, Float, Dict, DateTime, Email, List, Bool, Date, Money
+from errors import ApiSubExceptions
 
 __author__ = 'blackmatix'
 
