@@ -109,7 +109,7 @@ class WebApiRoute(ApiBaseHandler):
                 raise ApiSysExceptions.unacceptable_content_type
 
             if 'application/json' in self.content_type:
-                body_data = json.loads(self.request.body.decode())
+                body_data = json.loads(self.request.body.decode('utf-8'))
                 if body_data and isinstance(body_data, dict):
                     self.request_args.update(body_data)
                 else:
