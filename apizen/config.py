@@ -6,6 +6,7 @@
 # @Blog : http://www.cnblogs.com/blackmatrix/
 # @File : config.py
 # @Software: PyCharm
+import os
 
 __author__ = 'blackmatrix'
 
@@ -41,7 +42,10 @@ class ConfigMixin:
         raise AttributeError
 
     def __getitem__(self, item):
-        return getattr(self, item)
+        try:
+            return getattr(self, item)
+        except AttributeError as ex:
+            raise KeyError('{0} object has no key {1}'.format(self.__class__.__name__, item)) from ex
 
     def __iter__(self):
         return (k for k in dir(self) if k.upper() == k)
@@ -57,7 +61,11 @@ class ConfigMixin:
 
 
 class BaseConfig(ConfigMixin):
-    pass
+    """
+    配置文件基类
+    """
+    # 项目路径
+    PROJ_PATH = os.path.abspath('')
 
 
 class DefaultConfig(BaseConfig):
