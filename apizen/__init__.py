@@ -7,9 +7,9 @@
 # @File : __init__.py
 # @Software: PyCharm
 from .manager import ApiZenManager
+from .config import default, apizen_config
 from .method import get_method, run_method
 from .version import version, ApiMethodsBase
-from .config import default_config, current_config
 from .exceptions import ApiSysExceptions, SysException
 
 __author__ = 'blackmatrix'

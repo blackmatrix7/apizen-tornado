@@ -89,13 +89,40 @@ class DefaultConfig(BaseConfig):
     APIZEN_DATETIME_FMT = '%Y/%m/%d %H:%M:%S'
 
 
-default_config = DefaultConfig()
+default = DefaultConfig()
 
-current_config = {}
+configs = {'default': default}
 
 
-def set_current_config(key, value):
-    current_config[key] = value
+def get_current_config(config_name=None):
+    """
+    对本地配置文件的支持，当项目根目录存在localconfig.py文件时
+    优先从localconfig.py中读取配置，如果不存在读取config.py的配置。
+    localconfig.py 应该加入git的忽略文件
+    :return:
+    """
+    # 读取配置文件的名称，在具体的应用中，可以从环境变量、命令行参数等位置获取配置文件名称
+    config_name = config_name or 'default'
+    try:
+        import localconfig
+        current_config = localconfig.configs[config_name]
+    except ImportError:
+        current_config = configs[config_name]
+    return current_config
+
+
+apizen_config = {}
+
+
+def set_apizen_config(key, value):
+    """
+    在ApiZen初始化时，将全局的配置文件复制一份到ApiZen中
+    :param key:
+    :param value:
+    :return:
+    """
+    apizen_config[key] = value
+
 
 if __name__ == '__main__':
     pass

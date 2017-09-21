@@ -9,7 +9,7 @@
 import importlib
 from tornado.ioloop import IOLoop
 from tornado.concurrent import Future
-from .config import default_config, set_current_config
+from .config import default, set_apizen_config
 """
 -------------------------------
 ApiZen初始化管理模块
@@ -38,8 +38,8 @@ class ApiZenManager:
 
     # 复制当前的配置文件到ApiZen
     def copy_current_config(self):
-        for k, v in default_config.items():
-            set_current_config(k, self.config.get(k, default_config[k]))
+        for k, v in default.items():
+            set_apizen_config(k, self.config.get(k, default[k]))
 
 
 ioloop = IOLoop.instance()
