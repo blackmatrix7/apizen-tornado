@@ -61,6 +61,7 @@ class Cache(Client):
             key会自动加入这个前缀。
             set(key=''hello, value='value')，实际上在memcached中的key是testhello。
         CACHE_MEMCACHED_SERVERS： memcached服务器列表
+        CACHE_DECORATOR_ENABLE: cached缓存装饰器是否生效，此配置主要解决开发环境下不希望缓存生效的情况。
         """
         config = config or {}
         self.debug = config.get('DEBUG', debug)
@@ -178,7 +179,9 @@ class Cache(Client):
                     result = func(*args, **kwargs)
                 else:
                     # 将签名作为key，读取缓存中的函数执行结果
-                    result = func_cache.get(args_sig, func(*args, **kwargs))
+                    result = func_cache.get(args_sig)
+                    if result is None:
+                        result = func_cache.get(args_sig, func(*args, **kwargs))
                     # 如果签名未被缓存，且缓存数量超出限制大小则删除最早的缓存
                     if len(func_cache) >= maxsize and args_sig not in func_cache:
                         func_cache.popitem(last=False)
