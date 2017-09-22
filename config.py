@@ -6,7 +6,7 @@
 # @File: config.py
 # @Software: PyCharm
 import os
-from tookit.cmdline import cmdline
+from toolkit.cmdline import cmdline
 from apizen.config import BaseConfig
 __author__ = 'blackmatrix'
 

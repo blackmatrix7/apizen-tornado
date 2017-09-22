@@ -1,8 +1,8 @@
 import os
 from webapi import routing
-from tookit.cache import Cache
+from toolkit.cache import Cache
 from config import current_config
-from tookit.initlogs import log_init
+from toolkit.initlogs import log_init
 
 
 # 初始化日志配置文件
