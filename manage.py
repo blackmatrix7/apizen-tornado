@@ -25,6 +25,8 @@ define('port', default=current_config.get('PORT', 8011), type=int)
 # ApiZen初始化
 apizen = ApiZenManager(config=current_config)
 
+logger_root = logging.getLogger('root')
+
 
 class Application(tornado.web.Application):
     def __init__(self):
@@ -45,27 +47,54 @@ class Application(tornado.web.Application):
 
 
 def runserver():
-
-    logging_root = logging.getLogger('root')
+    """
+    启动web服务器
+    :return:
+    """
+    logger_root.info("start run web server.")
     http_server = HTTPServer(Application(), xheaders=True)
-    http_server.listen(options.port)
+    http_server.listen(current_config.PORT)
     loop = IOLoop.instance()
-    logging_root.info('Server running on http://%s:%s' % ('127.0.0.1', options.port))
+    logger_root.info('Server running on http://%s:%s' % ('127.0.0.1', current_config.PORT))
     loop.start()
 
+
+def runcelery():
+    """
+    启动celery
+    :return:
+    """
+    from runcelery import app
+    app.start(argv=['celery', 'worker', '-l', 'debug'])
+
+
+def runflower():
+    """
+    启动flower
+    :return:
+    """
+    from runcelery import app
+    app.start(argv=['celery', 'flower', '-l', 'debug'])
+
+
+def delcache():
+    """
+    清理所有缓存
+    :return:
+    """
+    cache.flush_all()
+
 if __name__ == '__main__':
-    logger_root = logging.getLogger('root')
-    logger_root.info("start run web server.")
 
-    parse_command_line()
-
-    if cmdline.command == 'runserver':
-        runserver()
-    elif cmdline.command == 'runcelery':
-        from runcelery import app
-        app.start(argv=['celery', 'worker', '-l', 'info'])
-    elif cmdline.command == 'flower':
-        from runcelery import app
-        app.start(argv=['celery', 'flower', '-l', 'debug'])
-    elif cmdline.command == 'delcaches':
-        cache.flush_all()
+    cmds = {
+        # 启动服务器
+        'runserver': runserver,
+        # 启动celery worker
+        'runcelery': runcelery,
+        # 启动celery flower
+        'runflower': runflower,
+        # 清理全部缓存
+        'delcache': delcache,
+        # 初始化工作流数据库
+        'initdb': None
+    }.get(cmdline.command, 'runserver')()
