@@ -65,7 +65,7 @@ def runcelery():
     :return:
     """
     from runcelery import app
-    app.start(argv=['celery', 'worker', '-l', 'debug'])
+    app.start(argv=['celery', 'worker', '-l', 'debug', '-f', '/logs/celery.log'])
 
 
 def runflower():
