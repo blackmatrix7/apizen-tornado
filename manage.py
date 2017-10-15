@@ -17,11 +17,6 @@ from tornado.httpserver import HTTPServer
 from toolkit.session import MemcacheSessionStore
 from tornado.options import define, parse_command_line, options
 
-# 定义tornado options
-define('cmd', default='runserver', metavar='runserver|syncdb|syncnewdb')
-define('port', default=current_config.get('PORT', 8011), type=int)
-
-
 # ApiZen初始化
 apizen = ApiZenManager(config=current_config)
 
