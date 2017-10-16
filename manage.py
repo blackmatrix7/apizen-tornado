@@ -15,7 +15,6 @@ from bootloader import cache, torconf
 from apizen.manager import ApiZenManager
 from tornado.httpserver import HTTPServer
 from toolkit.session import MemcacheSessionStore
-from tornado.options import define, parse_command_line, options
 
 # ApiZen初始化
 apizen = ApiZenManager(config=current_config)
@@ -60,7 +59,7 @@ def runcelery():
     :return:
     """
     from runcelery import app
-    app.start(argv=['celery', 'worker', '-l', 'debug', '-f', '/logs/celery.log'])
+    app.start(argv=['celery', 'worker', '-l', 'debug' if current_config.DEBUG else 'info', '-f', 'logs/celery.log'])
 
 
 def runflower():
@@ -69,7 +68,7 @@ def runflower():
     :return:
     """
     from runcelery import app
-    app.start(argv=['celery', 'flower', '-l', 'debug'])
+    app.start(argv=['celery', 'flower', '-l', 'debug' if current_config.DEBUG else 'info'])
 
 
 def delcache():
@@ -80,6 +79,8 @@ def delcache():
     cache.flush_all()
 
 if __name__ == '__main__':
+
+    logger_root.info('当前配置文件：{}'.format(cmdline.config))
 
     cmds = {
         # 启动服务器
