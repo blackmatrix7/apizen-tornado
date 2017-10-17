@@ -7,6 +7,7 @@
 # Software: PyCharm
 import logging
 import tornado.web
+from celery import Celery
 from toolkit.router import Route
 from config import current_config
 from tornado.ioloop import IOLoop
@@ -19,7 +20,12 @@ from toolkit.session import MemcacheSessionStore
 # ApiZen初始化
 apizen = ApiZenManager(config=current_config)
 
+# 日志模块
 logger_root = logging.getLogger('root')
+
+# celery
+celery = Celery('apizen',  broker=current_config.CELERY_BROKER_URL)
+celery.config_from_object('config.current_config')
 
 
 class Application(tornado.web.Application):
@@ -58,8 +64,7 @@ def runcelery():
     启动celery
     :return:
     """
-    from runcelery import app
-    app.start(argv=['celery', 'worker', '-l', 'debug' if current_config.DEBUG else 'info', '-f', 'logs/celery.log'])
+    celery.start(argv=['celery', 'worker', '-l', 'debug', '-f', 'logs/celery.log'])
 
 
 def runflower():
@@ -67,8 +72,7 @@ def runflower():
     启动flower
     :return:
     """
-    from runcelery import app
-    app.start(argv=['celery', 'flower', '-l', 'debug' if current_config.DEBUG else 'info'])
+    celery.start(argv=['celery', 'flower', '-l', 'debug' if current_config.DEBUG else 'info'])
 
 
 def delcache():
