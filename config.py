@@ -76,6 +76,8 @@ class DevConfig(CommonConfig):
 
     # Cache
     CACHE_KEY_PREFIX = 'debug'
+    # 默认队列
+    CELERY_DEFAULT_QUEUE = 'celery@apizen.dev'
 
     # Port
     PORT = 8011
@@ -90,6 +92,8 @@ class TestConfig(CommonConfig):
 
     # Cache
     CACHE_KEY_PREFIX = 'test'
+    # 默认队列
+    CELERY_DEFAULT_QUEUE = 'celery@apizen.test'
 
     # Port
     PORT = 8012

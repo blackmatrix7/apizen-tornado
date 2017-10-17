@@ -56,7 +56,7 @@ def runcelery():
     启动celery
     :return:
     """
-    celery.start(argv=['celery', 'worker', '-l', 'debug', '-f', 'logs/celery.log'])
+    celery.start(argv=['celery', 'worker', '-l', 'debug' if current_config.DEBUG else 'info', '-f', 'logs/celery.log'])
 
 
 def runflower():
@@ -64,7 +64,7 @@ def runflower():
     启动flower
     :return:
     """
-    celery.start(argv=['celery', 'flower', '-l', 'debug' if current_config.DEBUG else 'info'])
+    celery.start(argv=['celery', 'flower', '-l', 'debug' if current_config.DEBUG else 'info', '-f', 'logs/celery.log'])
 
 
 def delcache():
