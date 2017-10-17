@@ -86,7 +86,7 @@ class TestConfig(CommonConfig):
 
     DEBUG = False
     TESTING = True
-    ASYNC = False
+    ASYNC = True
 
     # Cache
     CACHE_KEY_PREFIX = 'test'

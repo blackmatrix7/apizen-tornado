@@ -1,5 +1,6 @@
 import os
-from webapi import routing
+import logging
+from celery import Celery
 from toolkit.cache import Cache
 from config import current_config
 from toolkit.initlogs import log_init
@@ -21,3 +22,10 @@ torconf = {
 
 # 缓存管理
 cache = Cache(config=current_config)
+
+# celery
+celery = Celery('apizen',  broker=current_config.CELERY_BROKER_URL)
+celery.config_from_object('config.current_config')
+
+# 日志模块
+logger = logging.getLogger('root')

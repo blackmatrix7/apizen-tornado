@@ -5,27 +5,19 @@
 # Site:
 # File: manage.py
 # Software: PyCharm
-import logging
 import tornado.web
-from celery import Celery
+from webapi import routing
 from toolkit.router import Route
 from config import current_config
 from tornado.ioloop import IOLoop
 from toolkit.cmdline import cmdline
-from bootloader import cache, torconf
 from apizen.manager import ApiZenManager
 from tornado.httpserver import HTTPServer
 from toolkit.session import MemcacheSessionStore
+from extensions import cache, torconf, celery, logger
 
 # ApiZen初始化
 apizen = ApiZenManager(config=current_config)
-
-# 日志模块
-logger_root = logging.getLogger('root')
-
-# celery
-celery = Celery('apizen',  broker=current_config.CELERY_BROKER_URL)
-celery.config_from_object('config.current_config')
 
 
 class Application(tornado.web.Application):
@@ -51,11 +43,11 @@ def runserver():
     启动web服务器
     :return:
     """
-    logger_root.info("start run web server.")
+    logger.info("start run web server.")
     http_server = HTTPServer(Application(), xheaders=True)
     http_server.listen(current_config.PORT)
     loop = IOLoop.instance()
-    logger_root.info('Server running on http://%s:%s' % ('127.0.0.1', current_config.PORT))
+    logger.info('Server running on http://%s:%s' % ('127.0.0.1', current_config.PORT))
     loop.start()
 
 
@@ -84,7 +76,7 @@ def delcache():
 
 if __name__ == '__main__':
 
-    logger_root.info('当前配置文件：{}'.format(cmdline.config))
+    logger.info('当前配置文件：{}'.format(cmdline.config))
 
     cmds = {
         # 启动服务器

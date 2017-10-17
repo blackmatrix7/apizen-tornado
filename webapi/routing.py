@@ -9,11 +9,11 @@ import json
 import logging
 import tornado.gen
 import tornado.web
-from runcelery import app
+from manage import celery
 from toolkit.router import route
-from config import current_config
 from apizen.manager import async
 from json import JSONDecodeError
+from config import current_config
 from apizen.schema import convert
 from apizen.method import get_method
 from inspect import Parameter, signature
@@ -29,7 +29,7 @@ __author__ = 'matrix'
 class WebApiRoute(ApiBaseHandler):
 
     @staticmethod
-    @app.task
+    @celery.task
     def async_webapi(method, v, args, http_method):
 
         api_code = 1000
