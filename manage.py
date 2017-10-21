@@ -76,7 +76,7 @@ def delcache():
 
 if __name__ == '__main__':
 
-    logger.info('当前配置文件：{}'.format(cmdline.config))
+    logger.info('config name：{}'.format(cmdline.config))
 
     cmds = {
         # 启动服务器
