@@ -97,8 +97,7 @@ class WebApiRoute(ApiBaseHandler):
             raise ApiSysExceptions.invalid_format
 
         # 拼装请求参数
-        self.content_type = self.request.headers['Content-Type'].lower() if 'Content-Type' in self.request.headers else None
-        self.request_args = {key: self.get_argument(key) for key in self.request.arguments}
+        self.request_args = self.arguments
 
         if self.request.method == 'POST':
 

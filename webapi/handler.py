@@ -39,15 +39,45 @@ class CustomJSONEncoder(json.JSONEncoder):
 
 class BaseHandler(RequestHandler):
 
-    def data_received(self, chunk):
-        pass
+    def __init__(self, application, request, **kwargs):
+        self._arguments = None
+        self._content_type = None
+        super().__init__(application, request, **kwargs)
 
-    def set_default_headers(self):
-        pass
+    @property
+    def arguments(self):
+        if self._arguments:
+            return self._arguments
+        else:
+            self._arguments = {key: self.get_argument(key) for key in self.request.arguments}
+            return self._arguments
+
+    @property
+    def body_arguments(self):
+        try:
+            body_args = json.loads(self.request.body.decode())
+            return body_args
+        except (ValueError, TypeError):
+            return {}
+
+    @property
+    def content_type(self):
+        if self._content_type:
+            return self._content_type
+        else:
+            self._content_type = self.request.headers['Content-Type'].lower() if 'Content-Type' in self.request.headers else None
+            return self._content_type
+
+    # make pycharm happy
+    def data_received(self, chunk):
+        raise NotImplementedError()
 
 
 class SysBaseHandler(BaseHandler):
-    pass
+
+    # make pycharm happy
+    def data_received(self, chunk):
+        raise NotImplementedError()
 
 
 class ApiBaseHandler(SysBaseHandler):
@@ -57,7 +87,6 @@ class ApiBaseHandler(SysBaseHandler):
         self._method = None
         self._v = None
         self._format = 'json'
-        self.content_type = ''
         self.request_args = {}
         self.resp = {}
         self.result = None
@@ -99,6 +128,10 @@ class ApiBaseHandler(SysBaseHandler):
 
     def check_xsrf_cookie(self):
         pass
+
+    # make pycharm happy
+    def data_received(self, chunk):
+        raise NotImplementedError()
 
 
 if __name__ == '__main__':
