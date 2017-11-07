@@ -29,6 +29,9 @@ class CommonConfig(BaseConfig):
     # login匹配
     LOGIN_URL = '/signin'
 
+    # 导入Apps
+    ImportAPPS = ['webapi', 'admin']
+
     # 数据库配置
 
     # ApiZen配置
