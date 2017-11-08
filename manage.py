@@ -5,6 +5,7 @@
 # Site:
 # File: manage.py
 # Software: PyCharm
+import os
 import importlib
 import tornado.web
 from toolkit.router import Route
@@ -13,9 +14,9 @@ from tornado.ioloop import IOLoop
 from toolkit.cmdline import cmdline
 from apizen.manager import ApiZenManager
 from tornado.httpserver import HTTPServer
+from extensions import cache, celery, logger
 from tornsql.patching import monkey_patching
 from toolkit.session import MemcacheSessionStore
-from extensions import cache, torconf, celery, logger
 
 # ApiZen初始化
 apizen = ApiZenManager(config=current_config)
@@ -32,6 +33,17 @@ try:
         importlib.import_module('apps.{0}.handlers'.format(app))
 except ImportError:
         pass
+
+# tornado 配置
+torconf = {
+        'style_path': os.path.join(os.path.dirname(__file__), 'style'),
+        'static_path': os.path.join(os.path.dirname(__file__), 'static'),
+        'upload_path': os.path.join(os.path.dirname(__file__), 'upload'),
+        'cookie_secret': current_config.get('COOKIE_SECRET'),
+        'login_url': current_config.get('LOGIN_URL'),
+        "xsrf_cookies": True,
+        'autoescape': None
+    }
 
 
 class Application(tornado.web.Application):

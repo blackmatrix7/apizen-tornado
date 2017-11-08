@@ -39,16 +39,13 @@ class CommonConfig(BaseConfig):
     DEMO_DB_PASS = os.environ.get('DEMO_DB_PASS', 'xxxxxx')
     DEMO_DB_NAME = os.environ.get('DEMO_DB_NAME', 'demo')
 
-    DEMO_DB_CONNECT = property(lambda self:
-                               'mysql+pymysql://{0}:{1}@{2}:{3}/{4}?charset=utf8'.format(
-                                   self.DEMO_DB_USER, self.DEMO_DB_PASS, self.DEMO_DB_HOST,
-                                   self.DEMO_DB_PORT, self.DEMO_DB_NAME))
+    DEMO_DB_CONNECT = property(lambda self: 'sqlite:///./db.sqlite3')
 
     DATABASES = {
         'demo':
             {
                 'engine': '',
-                'name': ''
+                'db': ''
             }
     }
 

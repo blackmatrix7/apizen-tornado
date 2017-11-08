@@ -9,16 +9,6 @@ from toolkit.initlogs import log_init
 local_cfg_path = os.path.abspath('logging.cfg')
 log_init(file=local_cfg_path)
 
-torconf = {
-        'style_path': os.path.join(os.path.dirname(__file__), 'style'),
-        'static_path': os.path.join(os.path.dirname(__file__), 'static'),
-        'upload_path': os.path.join(os.path.dirname(__file__), 'upload'),
-        'cookie_secret': current_config.get('COOKIE_SECRET'),
-        'login_url': current_config.get('LOGIN_URL'),
-        "xsrf_cookies": True,
-        'autoescape': None
-    }
-
 # 缓存管理
 cache = Cache(config=current_config)
 
