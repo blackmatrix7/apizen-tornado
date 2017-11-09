@@ -33,6 +33,24 @@ class CommonConfig(BaseConfig):
     IMPORT_APPS = ['webapi', 'admin']
 
     # 数据库配置
+    DEMO_DB_HOST = os.environ.get('DEMO_DB_HOST', 'XXX.XXXX.XXX.XXX')
+    DEMO_DB_PORT = os.environ.get('DEMO_DB_PORT', 3306)
+    DEMO_DB_USER = os.environ.get('DEMO_DB_USER', 'xxxx')
+    DEMO_DB_PASS = os.environ.get('DEMO_DB_PASS', 'xxxxxx')
+    DEMO_DB_NAME = os.environ.get('DEMO_DB_NAME', 'demo')
+
+    DEMO_DB_CONNECT = property(lambda self:
+                               'mysql+pymysql://{0}:{1}@{2}:{3}/{4}?charset=utf8'.format(
+                                   self.DEMO_DB_USER, self.DEMO_DB_PASS, self.DEMO_DB_HOST,
+                                   self.DEMO_DB_PORT, self.DEMO_DB_NAME))
+
+    DATABASES = {
+        'demo':
+            {
+                'engine': '',
+                'name': ''
+            }
+    }
 
     # ApiZen配置
     APIZEN_ROUTE = ('/api/router/rest', '/api/router/json')

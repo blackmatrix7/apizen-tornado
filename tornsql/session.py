@@ -66,7 +66,10 @@ class DataBase:
         if self._engine is None:
             self._engine = self.create_engine()
         return self._engine
-        pass
+
+    @staticmethod
+    def create_scoped_session(db_engine):
+        return scoped_session(sessionmaker(autocommit=False, autoflush=True, expire_on_commit=False, bind=db_engine), scopefunc=scope.get)
 
     # 初始化数据库
     def init_db(self):

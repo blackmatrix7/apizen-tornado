@@ -9,7 +9,5 @@
 
 __author__ = 'blackmatrix'
 
-print('我被import了')
-
 if __name__ == '__main__':
     pass
