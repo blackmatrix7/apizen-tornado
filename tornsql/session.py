@@ -26,6 +26,9 @@ class Scope:
 
 scope = Scope()
 
+# 数据库连接
+databases = {}
+
 
 def create_engine(config=None, connect_str=None, echo=True, max_overflow=10, encoding='utf-8'):
     config = config or {}
@@ -41,9 +44,8 @@ def create_db(db_engine):
     return scoped_session(sessionmaker(autocommit=False, autoflush=True, expire_on_commit=False, bind=db_engine), scopefunc=scope.get)
 
 
-engine = create_engine(connect_str=current_config.WORKFLOW_DB_CONNECT)
-
-db = create_db(engine)
+def new_db(name, engine, db):
+    databases.update({name: {'engine': engine, 'db': db}})
 
 
 class DataBase:
