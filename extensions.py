@@ -5,7 +5,6 @@ from toolkit.cache import Cache
 from config import current_config
 from toolkit.initlogs import log_init
 
-
 # 初始化日志配置文件
 local_cfg_path = os.path.abspath('logging.cfg')
 log_init(file=local_cfg_path)

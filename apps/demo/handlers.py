@@ -82,7 +82,7 @@ def money_to_decimal(money: Money):
     """
     测试自定义的Money类型，会转换成Decimal
     :param money:  金额
-    :return: 
+    :return:
     """
     return money
 
@@ -135,8 +135,8 @@ def raw_data():
 def is_bool(value: Bool):
     """
     测试布尔值类型
-    :param value: 
-    :return: 
+    :param value:
+    :return:
     """
     return value
 

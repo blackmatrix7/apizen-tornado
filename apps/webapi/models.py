@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# @Time : 2017/11/8 下午1:53
+# @Time : 2017/11/9 下午2:19
 # @Author : Matrix
 # @Github : https://github.com/blackmatrix7/
 # @Blog : http://www.cnblogs.com/blackmatrix/
@@ -8,8 +8,6 @@
 # @Software: PyCharm
 
 __author__ = 'blackmatrix'
-
-print('我被import了')
 
 if __name__ == '__main__':
     pass

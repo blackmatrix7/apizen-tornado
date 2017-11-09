@@ -5,8 +5,8 @@
 # Site:
 # File: manage.py
 # Software: PyCharm
+import importlib
 import tornado.web
-from webapi import routing
 from toolkit.router import Route
 from config import current_config
 from tornado.ioloop import IOLoop
@@ -18,6 +18,16 @@ from extensions import cache, torconf, celery, logger
 
 # ApiZen初始化
 apizen = ApiZenManager(config=current_config)
+
+# 加载Apps
+apps = current_config.IMPORT_APPS
+try:
+    for app in apps:
+        importlib.import_module('apps.{0}.models'.format(app))
+        importlib.import_module('apps.{0}.methods'.format(app))
+        importlib.import_module('apps.{0}.handlers'.format(app))
+except ImportError:
+        pass
 
 
 class Application(tornado.web.Application):

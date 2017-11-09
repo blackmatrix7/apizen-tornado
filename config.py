@@ -30,7 +30,7 @@ class CommonConfig(BaseConfig):
     LOGIN_URL = '/signin'
 
     # 导入Apps
-    ImportAPPS = ['webapi', 'admin']
+    IMPORT_APPS = ['webapi', 'admin']
 
     # 数据库配置
 

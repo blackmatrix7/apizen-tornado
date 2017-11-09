@@ -1,27 +1,149 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# @Time    : 2017/5/5 下午3:29
+# @Time    : 2017/5/16 上午11:20
 # @Author  : Matrix
-# @Site    :
-# @File    : routing.py
+# @Site    : 
+# @File    : handler.py
 # @Software: PyCharm
 import json
 import logging
 import tornado.gen
 import tornado.web
 from manage import celery
+from decimal import Decimal
+from tornado.escape import utf8
 from toolkit.router import route
 from apizen.manager import async
 from json import JSONDecodeError
 from config import current_config
 from apizen.schema import convert
+from datetime import datetime, date
 from apizen.method import get_method
+from tornado.util import unicode_type
+from tornado.web import RequestHandler
 from inspect import Parameter, signature
-from webapi.handler import ApiBaseHandler
 from tornado.web import MissingArgumentError
 from apizen import ApiSysExceptions, SysException
 
-__author__ = 'matrix'
+__author__ = 'blackmatrix'
+
+
+class CustomJSONEncoder(json.JSONEncoder):
+
+    datetime_format = None
+
+    def default(self, obj):
+        try:
+            if isinstance(obj, datetime):
+                return obj.strftime(current_config.get('DATETIME_FMT'))
+            elif isinstance(obj, date):
+                return obj.strftime(current_config.get('DATE_FMT'))
+            elif isinstance(obj, Decimal):
+                # 不转换为float是为了防止精度丢失
+                return str(obj)
+            iterable = iter(obj)
+        except TypeError:
+            pass
+        else:
+            return list(iterable)
+        return json.JSONEncoder.default(self, obj)
+
+
+class BaseHandler(RequestHandler):
+
+    def __init__(self, application, request, **kwargs):
+        self._arguments = None
+        self._content_type = None
+        super().__init__(application, request, **kwargs)
+
+    @property
+    def arguments(self):
+        if self._arguments:
+            return self._arguments
+        else:
+            self._arguments = {key: self.get_argument(key) for key in self.request.arguments}
+            return self._arguments
+
+    @property
+    def body_arguments(self):
+        try:
+            body_args = json.loads(self.request.body.decode())
+            return body_args
+        except (ValueError, TypeError):
+            return {}
+
+    @property
+    def content_type(self):
+        if self._content_type:
+            return self._content_type
+        else:
+            self._content_type = self.request.headers['Content-Type'].lower() if 'Content-Type' in self.request.headers else None
+            return self._content_type
+
+    # make pycharm happy
+    def data_received(self, chunk):
+        raise NotImplementedError()
+
+
+class SysBaseHandler(BaseHandler):
+
+    # make pycharm happy
+    def data_received(self, chunk):
+        raise NotImplementedError()
+
+
+class ApiBaseHandler(SysBaseHandler):
+
+    def __init__(self, application, request, **kwargs):
+        # 请求参数
+        self._method = None
+        self._v = None
+        self._format = 'json'
+        self.request_args = {}
+        self.resp = {}
+        self.result = None
+        # 返回参数
+        self.api_code = 1000
+        self.api_msg = '执行成功'
+        self.http_code = 200
+        self.err_type = None
+        SysBaseHandler.__init__(self, application, request, **kwargs)
+
+    def write(self, chunk):
+        """Writes the given chunk to the output buffer.
+
+        To write the output to the network, use the flush() method below.
+
+        If the given chunk is a dictionary, we write it as JSON and set
+        the Content-Type of the response to be ``application/json``.
+        (if you want to send JSON as a different ``Content-Type``, call
+        set_header *after* calling write()).
+
+        Note that lists are not converted to JSON because of a potential
+        cross-site security vulnerability.  All JSON output should be
+        wrapped in a dictionary.  More details at
+        http://haacked.com/archive/2009/06/25/json-hijacking.aspx/ and
+        https://github.com/facebook/tornado/issues/1009
+        """
+        if self._finished:
+            raise RuntimeError("Cannot write() after finish()")
+        if not isinstance(chunk, (bytes, unicode_type, dict)):
+            message = "write() only accepts bytes, unicode, and dict objects"
+            if isinstance(chunk, list):
+                message += ". Lists not accepted for security reasons; see http://www.tornadoweb.org/en/stable/web.html#tornado.web.RequestHandler.write"
+            raise TypeError(message)
+        if isinstance(chunk, dict):
+            chunk = json.dumps(chunk, cls=CustomJSONEncoder).replace("</", "<\\/")
+            self.set_header("Content-Type", "application/json; charset=UTF-8")
+        chunk = utf8(chunk)
+        self._write_buffer.append(chunk)
+
+    def check_xsrf_cookie(self):
+        pass
+
+    # make pycharm happy
+    def data_received(self, chunk):
+        pass
 
 
 @route(r'/api/router/rest')
@@ -198,3 +320,6 @@ class WebApiRoute(ApiBaseHandler):
         if self.api_code != 1000:
             logging.error(self.resp)
 
+
+if __name__ == '__main__':
+    pass
