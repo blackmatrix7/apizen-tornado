@@ -13,11 +13,15 @@ from tornado.ioloop import IOLoop
 from toolkit.cmdline import cmdline
 from apizen.manager import ApiZenManager
 from tornado.httpserver import HTTPServer
+from tornsql.patching import monkey_patching
 from toolkit.session import MemcacheSessionStore
 from extensions import cache, torconf, celery, logger
 
 # ApiZen初始化
 apizen = ApiZenManager(config=current_config)
+
+# 猴子补丁，保证sqlalchemy session 在 tornado 异步况下的安全
+monkey_patching()
 
 # 加载Apps
 apps = current_config.IMPORT_APPS
