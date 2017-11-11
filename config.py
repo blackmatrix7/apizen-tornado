@@ -41,14 +41,6 @@ class CommonConfig(BaseConfig):
 
     DEMO_DB_CONNECT = property(lambda self: 'sqlite:///./db.sqlite3')
 
-    DATABASES = {
-        'demo':
-            {
-                'engine': '',
-                'db': ''
-            }
-    }
-
     # ApiZen配置
     APIZEN_ROUTE = ('/api/router/rest', '/api/router/json')
     APIZEN_VERSIONS = ('webapi.methods', )
