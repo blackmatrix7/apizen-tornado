@@ -39,7 +39,7 @@ class CommonConfig(BaseConfig):
     DEMO_DB_PASS = os.environ.get('DEMO_DB_PASS', 'xxxxxx')
     DEMO_DB_NAME = os.environ.get('DEMO_DB_NAME', 'demo')
 
-    DEMO_DB_CONNECT = property(lambda self: 'sqlite:///./db.sqlite3')
+    BLOG_DB_CONNECT = property(lambda self: 'sqlite:///./blog.sqlite3')
 
     # ApiZen配置
     APIZEN_ROUTE = ('/api/router/rest', '/api/router/json')
