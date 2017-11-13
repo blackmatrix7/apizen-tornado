@@ -5,7 +5,7 @@
 # @Site: https://github.com/blackmatrix7
 # @File: session
 # @Software: PyCharm
-from config import current_config
+from extensions import databases
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy import create_engine as default_create_engine
 
@@ -25,9 +25,6 @@ class Scope:
 
 
 scope = Scope()
-
-# 数据库连接
-databases = {}
 
 
 def create_engine(config=None, connect_str=None, echo=True, max_overflow=10, encoding='utf-8'):
