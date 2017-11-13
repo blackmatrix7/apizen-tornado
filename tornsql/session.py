@@ -38,7 +38,7 @@ def create_engine(config=None, connect_str=None, echo=True, max_overflow=10, enc
 
 
 # 支持SQLite
-def create_sqlite_engine(config=None, connect_str=None, echo=True, max_overflow=10, encoding='utf-8'):
+def create_sqlite_engine(config=None, connect_str=None, echo=True, encoding='utf-8'):
     config = config or {}
     echo = config.get('DB_ECHO', echo)
     encoding = config.get('DB_ENCODING', encoding)
@@ -89,6 +89,12 @@ class DataBase:
     def drop_db(self):
         from .model import Model
         Model.metadata.drop_all(self.engine)
+
+
+class DataBaseSQLite(DataBase):
+
+    def create_engine(self):
+        return create_sqlite_engine(connect_str=self.connect_str, echo=self.echo, encoding=self.encoding)
 
 
 if __name__ == '__main__':

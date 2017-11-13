@@ -99,12 +99,12 @@ def initdb():
     result = input().lower()
     if result == 'yes':
         from apps.demo.models import Article
-        from tornsql.session import DataBase
-        db = DataBase(connect_str=current_config.DEMO_DB_CONNECT)
+        from tornsql.session import DataBaseSQLite
+        db = DataBaseSQLite(connect_str=current_config.DEMO_DB_CONNECT)
         db.drop_db()
         db.init_db()
         from apps.demo.models import Logs
-        db = DataBase(connect_str=current_config.LOGS_DB_CONNECT)
+        db = DataBaseSQLite(connect_str=current_config.LOGS_DB_CONNECT)
         db.drop_db()
         db.init_db()
 

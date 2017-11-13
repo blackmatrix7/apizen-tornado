@@ -153,10 +153,19 @@ def raise_runtime_error():
 def new_article(title, content):
     from .models import Article
     article = Article()
-    article.title = '测试标题'
-    article.content = '测试内容'
+    article.title = title
+    article.content = content
     article.insert().commit()
     return article.to_dict()
+
+
+def new_logs(name, remark):
+    from .models import Logs
+    logs = Logs()
+    logs.name = name
+    logs.remark = remark
+    logs.insert().commit()
+    return logs.to_dict()
 
 
 class ApiDemo:
