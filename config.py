@@ -44,7 +44,7 @@ class CommonConfig(BaseConfig):
 
     # ApiZen配置
     APIZEN_ROUTE = ('/api/router/rest', '/api/router/json')
-    APIZEN_VERSIONS = ('webapi.methods', )
+    APIZEN_VERSIONS = ('apps.webapi.methods', )
     APIZEN_DATE_FMT = '%Y-%m-%d'
     APIZEN_DATETIME_FMT = '%Y/%m/%d %H:%M:%S'
     APIZEN_RESP_FMT = '{"meta": {"code": {code}, "message": {message}}, "response": {response}}'
