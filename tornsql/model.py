@@ -28,6 +28,22 @@ class ModelMixin:
         setattr(self, key, value)
 
     @property
+    def id(self):
+        """
+        make pycharm happy
+        :return:
+        """
+        return NotImplemented
+
+    @property
+    def __table__(self):
+        """
+        make pycharm happy
+        :return:
+        """
+        return NotImplemented
+
+    @property
     def db(self):
         cls = type(self)
         return databases[cls.__database__]['db']
@@ -49,7 +65,7 @@ class ModelMixin:
 
     @classmethod
     def get_by_id(cls, id_):
-        return databases[__database__]['db'].query(cls).filter(cls.id == int(id_)).first()
+        return databases[cls.__database__]['db'].query(cls).filter(cls.id == int(id_)).first()
 
     def to_dict(self, columns=None):
         """
