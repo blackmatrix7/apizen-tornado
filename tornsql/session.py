@@ -5,7 +5,6 @@
 # @Site: https://github.com/blackmatrix7
 # @File: session
 # @Software: PyCharm
-from extensions import databases
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy import create_engine as default_create_engine
 
@@ -33,8 +32,10 @@ def create_engine(config=None, connect_str=None, echo=True, max_overflow=10, enc
     encoding = config.get('DB_ENCODING', encoding)
     connect_str = config.get('DB_CONNECT', connect_str)
     max_overflow = config.get('DB_MAX_OVERFLOW', max_overflow)
-    return default_create_engine(connect_str, echo=echo, max_overflow=max_overflow,
-                                 encoding=encoding, pool_recycle=3600, pool_size=100)
+    return default_create_engine(connect_str, echo=echo,
+                                 encoding=encoding, pool_recycle=3600)
+
+databases = {}
 
 
 def create_db(db_engine):

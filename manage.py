@@ -26,13 +26,18 @@ monkey_patching()
 
 # 加载Apps
 apps = current_config.IMPORT_APPS
-try:
-    for app in apps:
-        importlib.import_module('apps.{0}.models'.format(app))
-        importlib.import_module('apps.{0}.methods'.format(app))
-        importlib.import_module('apps.{0}.handlers'.format(app))
-except ImportError:
+
+
+def import_app_module(app_name, module_name):
+    try:
+        importlib.import_module('apps.{0}.{1}'.format(app_name, module_name))
+    except ImportError:
         pass
+
+for app in apps:
+    import_app_module(app, 'models')
+    import_app_module(app, 'handlers')
+    import_app_module(app, 'methods')
 
 # tornado 配置
 torconf = {
@@ -100,6 +105,18 @@ def delcache():
     """
     cache.flush_all()
 
+
+def initdb():
+    print('请输入 yes 确认重置数据库')
+    result = input().lower()
+    if result == 'yes':
+        from apps.demo.models import Article
+        from tornsql.session import DataBase
+        db = DataBase(connect_str=current_config.DEMO_DB_CONNECT)
+        db.drop_db()
+        db.init_db()
+
+
 if __name__ == '__main__':
 
     logger.info('config name：{}'.format(cmdline.config))
@@ -114,5 +131,5 @@ if __name__ == '__main__':
         # 清理全部缓存
         'delcache': delcache,
         # 初始化工作流数据库
-        'initdb': None
+        'initdb': initdb
     }.get(cmdline.command, 'runserver')()

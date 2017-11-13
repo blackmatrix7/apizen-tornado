@@ -14,6 +14,7 @@ __author__ = 'blackmatrix'
 
 class Article(ModelBase):
 
+    __tablename__ = 'article'
     __database__ = 'demo'
 
     title = Column(String(40), nullable=True)

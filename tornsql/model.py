@@ -30,7 +30,7 @@ class ModelMixin:
     @property
     def db(self):
         cls = type(self)
-        return databases[cls]['db']
+        return databases[cls.__database__]['db']
 
     def insert(self):
         self.db.add(self)
