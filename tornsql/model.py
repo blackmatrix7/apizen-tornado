@@ -14,7 +14,7 @@ from sqlalchemy.types import Integer, String, DateTime, Boolean
 
 __author__ = 'blackmatrix'
 
-BaseModel = declarative_base()
+Model = declarative_base()
 
 
 class ModelMixin:
@@ -32,7 +32,7 @@ class ModelMixin:
         cls = type(self)
         return databases[cls]['db']
 
-    def upsert(self):
+    def insert(self):
         self.db.add(self)
         return self
 
@@ -62,7 +62,7 @@ class ModelMixin:
         return {c: getattr(self, c) for c in columns}
 
 
-class ModelBase(BaseModel, ModelMixin):
+class ModelBase(Model, ModelMixin):
 
     __abstract__ = True
 

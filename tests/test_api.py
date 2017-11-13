@@ -330,6 +330,14 @@ class ApiZenTestCase(unittest.TestCase):
         assert data['meta']['code'] == 1017
         self.api_version = '1.0'
 
+    # 测试新增文章
+    def test_new_article(self):
+        self.api_method = 'matrix.demo.articles.set'
+        self.api_version = '1.0'
+        playload = {'title': '测试文章标题', 'content': '测试文章内容'}
+        resp = requests.post(self.request_url, json=playload)
+        assert resp.status_code == 200
+        data = resp.json()
 
 if __name__ == '__main__':
     tests = unittest.TestLoader().discover('test')

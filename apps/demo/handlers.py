@@ -150,6 +150,15 @@ def raise_runtime_error():
     raise RuntimeError
 
 
+def new_article(title, content):
+    from .models import Article
+    article = Article()
+    article.title = '测试标题'
+    article.content = '测试内容'
+    article.insert().commit()
+    return article.to_dict()
+
+
 class ApiDemo:
 
     def __init__(self):

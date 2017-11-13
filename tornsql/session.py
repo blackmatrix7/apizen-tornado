@@ -70,13 +70,13 @@ class DataBase:
 
     # 初始化数据库
     def init_db(self):
-        from .model import BaseModel
-        BaseModel.metadata.create_all(self.engine)
+        from .model import Model
+        Model.metadata.create_all(self.engine)
 
     # 销毁数据库
     def drop_db(self):
-        from .model import BaseModel
-        BaseModel.metadata.drop_all(self.engine)
+        from .model import Model
+        Model.metadata.drop_all(self.engine)
 
 
 if __name__ == '__main__':

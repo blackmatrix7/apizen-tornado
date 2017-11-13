@@ -61,7 +61,9 @@ class DemoApiMethods(ApiMethodsBase):
         # 模拟接口阻塞
         'matrix.api.sleep': {'func': sleep_seconds},
         # 模拟接口阻塞
-        'matrix.api.runtime-error': {'func': raise_runtime_error}
+        'matrix.api.runtime-error': {'func': raise_runtime_error},
+        # 测试新增文件
+        'matrix.demo.articles.set': {'func': new_article}
     }
 
 if __name__ == '__main__':
