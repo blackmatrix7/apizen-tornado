@@ -26,14 +26,25 @@ class Scope:
 scope = Scope()
 
 
+# 支持MySQL
 def create_engine(config=None, connect_str=None, echo=True, max_overflow=10, encoding='utf-8'):
     config = config or {}
     echo = config.get('DB_ECHO', echo)
     encoding = config.get('DB_ENCODING', encoding)
     connect_str = config.get('DB_CONNECT', connect_str)
     max_overflow = config.get('DB_MAX_OVERFLOW', max_overflow)
-    return default_create_engine(connect_str, echo=echo,
-                                 encoding=encoding, pool_recycle=3600)
+    return default_create_engine(connect_str, echo=echo, max_overflow=max_overflow,
+                                 encoding=encoding, pool_recycle=3600, pool_size=100)
+
+
+# 支持SQLite
+def create_sqlite_engine(config=None, connect_str=None, echo=True, max_overflow=10, encoding='utf-8'):
+    config = config or {}
+    echo = config.get('DB_ECHO', echo)
+    encoding = config.get('DB_ENCODING', encoding)
+    connect_str = config.get('DB_CONNECT', connect_str)
+    return default_create_engine(connect_str, echo=echo, encoding=encoding, pool_recycle=3600)
+
 
 databases = {}
 
