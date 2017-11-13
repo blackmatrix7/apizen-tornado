@@ -30,7 +30,7 @@ class CommonConfig(BaseConfig):
     LOGIN_URL = '/signin'
 
     # 导入Apps
-    IMPORT_APPS = ['webapi', 'admin']
+    IMPORT_APPS = ['webapi', 'demo']
 
     # 数据库配置
     DEMO_DB_HOST = os.environ.get('DEMO_DB_HOST', 'XXX.XXXX.XXX.XXX')
@@ -39,7 +39,8 @@ class CommonConfig(BaseConfig):
     DEMO_DB_PASS = os.environ.get('DEMO_DB_PASS', 'xxxxxx')
     DEMO_DB_NAME = os.environ.get('DEMO_DB_NAME', 'demo')
 
-    BLOG_DB_CONNECT = property(lambda self: 'sqlite:///./blog.sqlite3')
+    DEMO_DB_CONNECT = property(lambda self: 'sqlite:///./demo.sqlite3')
+    LOGS_DB_CONNECT = property(lambda self: 'sqlite:///./logs.sqlite3')
 
     # ApiZen配置
     APIZEN_ROUTE = ('/api/router/rest', '/api/router/json')
