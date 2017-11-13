@@ -6,12 +6,12 @@
 # File: manage.py
 # Software: PyCharm
 import os
-import importlib
 import tornado.web
 from toolkit.router import Route
 from config import current_config
 from tornado.ioloop import IOLoop
 from toolkit.cmdline import cmdline
+from toolkit.apps import import_apps
 from apizen.manager import ApiZenManager
 from tornado.httpserver import HTTPServer
 from extensions import cache, celery, logger
@@ -25,19 +25,7 @@ apizen = ApiZenManager(config=current_config)
 monkey_patching()
 
 # 加载Apps
-apps = current_config.IMPORT_APPS
-
-
-def import_app_module(app_name, module_name):
-    try:
-        importlib.import_module('apps.{0}.{1}'.format(app_name, module_name))
-    except ImportError:
-        pass
-
-for app in apps:
-    import_app_module(app, 'models')
-    import_app_module(app, 'handlers')
-    import_app_module(app, 'methods')
+import_apps(current_config.IMPORT_APPS)
 
 # tornado 配置
 torconf = {
@@ -113,6 +101,10 @@ def initdb():
         from apps.demo.models import Article
         from tornsql.session import DataBase
         db = DataBase(connect_str=current_config.DEMO_DB_CONNECT)
+        db.drop_db()
+        db.init_db()
+        from apps.demo.models import Logs
+        db = DataBase(connect_str=current_config.LOGS_DB_CONNECT)
         db.drop_db()
         db.init_db()
 

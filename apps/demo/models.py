@@ -21,5 +21,14 @@ class Article(ModelBase):
     content = Column(Text, nullable=True)
 
 
+class Logs(ModelBase):
+
+    __tablename__ = 'logs'
+    __database__ = 'logs'
+
+    name = Column(String(40), nullable=True)
+    remark = Column(String(40), nullable=True)
+
+
 if __name__ == '__main__':
     pass
