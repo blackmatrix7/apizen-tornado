@@ -48,7 +48,7 @@ class BaseHandler(web.RequestHandler):
 
     def on_finish(self):
         scope.set(self)
-        for name, database in databases:
+        for name, database in databases.items():
             database['db'].remove()
         scope.set(None)
 
