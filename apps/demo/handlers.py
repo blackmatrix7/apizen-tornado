@@ -6,10 +6,9 @@
 # @File: controller.py
 # @Software: PyCharm
 from functools import wraps
-
 from apizen.method import apiconfig
-from apizen.schema import Integer, String, Float, Dict, DateTime, Email, List, Bool, Date, Money
 from errors import ApiSubExceptions
+from apizen.schema import Integer, String, Float, Dict, DateTime, Email, List, Bool, Date, Money
 
 __author__ = 'blackmatix'
 
@@ -26,10 +25,12 @@ def test_decorator(func):
     return wrapper
 
 
+@apiconfig(allow_anonymous=True)
 def first_api():
     return '这是第一个Api例子'
 
 
+@apiconfig(allow_anonymous=True)
 def register_user(name, age, email=None):
     """
     测试装饰器对获取函数参数的影响，及接口参数判断说明
@@ -41,6 +42,7 @@ def register_user(name, age, email=None):
     return {'name': name, 'age': age, 'email': email}
 
 
+@apiconfig(allow_anonymous=True)
 def register_user_plus(name: String, age: Integer, birthday: Date, email=None):
     """
     测试装饰器对获取函数参数的影响，及接口参数判断说明
@@ -53,6 +55,7 @@ def register_user_plus(name: String, age: Integer, birthday: Date, email=None):
     return {'name': name, 'age': age, 'birthday': birthday, 'email': email}
 
 
+@apiconfig(allow_anonymous=True)
 @test_decorator
 def validate_email(name: String, age: Integer, birthday: Date, email: Email):
     """
@@ -66,6 +69,7 @@ def validate_email(name: String, age: Integer, birthday: Date, email: Email):
     return {'name': name, 'age': age, 'birthday': birthday, 'email': email}
 
 
+@apiconfig(allow_anonymous=True)
 def custom_date_fmt(name: String, age: Integer, birthday: Date('%Y年%M月%d日'), email: Email):
     """
     测试自定义日期格式
@@ -78,6 +82,7 @@ def custom_date_fmt(name: String, age: Integer, birthday: Date('%Y年%M月%d日'
     return {'name': name, 'age': age, 'birthday': birthday, 'email': email}
 
 
+@apiconfig(allow_anonymous=True)
 def money_to_decimal(money: Money):
     """
     测试自定义的Money类型，会转换成Decimal
@@ -87,15 +92,18 @@ def money_to_decimal(money: Money):
     return money
 
 
+@apiconfig(allow_anonymous=True)
 def json_to_dict(user: Dict):
     return user
 
 
+@apiconfig(allow_anonymous=True)
 def json_to_list(user: List):
     return user
 
 
 # 演示抛出异常
+@apiconfig(allow_anonymous=True)
 def raise_error():
     """
     接口抛出异常的使用说明，抛出异常信息后，会在返回接口的code中显示对应异常的编号，
@@ -106,6 +114,7 @@ def raise_error():
 
 
 # 演示自定义异常信息
+@apiconfig(allow_anonymous=True)
 def custom_error():
     """
     接口抛出异常的使用说明，抛出异常信息后，会在返回接口的code中显示对应异常的编号，
@@ -116,6 +125,7 @@ def custom_error():
 
 
 # 测试自定义异常信息后，对其他地方调用的影响
+@apiconfig(allow_anonymous=True)
 def after_custom_error():
     """
     接口抛出异常的使用说明，抛出异常信息后，会在返回接口的code中显示对应异常的编号，
@@ -127,11 +137,17 @@ def after_custom_error():
 
 
 # 保留原始返回格式
-@apiconfig(raw_resp=True)
+@apiconfig(raw_resp=True, allow_anonymous=True)
 def raw_data():
     return {'id': 1, 'message': '保留原始返回格式'}
 
 
+# 不允许匿名访问
+def not_allowed_anonymous():
+    pass
+
+
+@apiconfig(allow_anonymous=True)
 def is_bool(value: Bool):
     """
     测试布尔值类型
@@ -141,15 +157,18 @@ def is_bool(value: Bool):
     return value
 
 
+@apiconfig(allow_anonymous=True)
 def sleep_seconds(seconds=10):
     import time
     time.sleep(seconds)
 
 
+@apiconfig(allow_anonymous=True)
 def raise_runtime_error():
     raise RuntimeError
 
 
+@apiconfig(allow_anonymous=True)
 def new_article(title, content):
     from .models import Article
     article = Article()
@@ -159,6 +178,7 @@ def new_article(title, content):
     return article.to_dict()
 
 
+@apiconfig(allow_anonymous=True)
 def new_logs(name, remark):
     from .models import Logs
     logs = Logs()
@@ -174,6 +194,7 @@ class ApiDemo:
         self.value = None
 
     @staticmethod
+    @apiconfig(allow_anonymous=True)
     @test_decorator
     def set_user(user_id: Integer, name: String, createtime: DateTime, mark: Float=None, age: Integer=19):
         """
@@ -191,6 +212,7 @@ class ApiDemo:
 
     # 演示静态方法调用
     @staticmethod
+    @apiconfig(allow_anonymous=True)
     def set_users(users: list):
         def return_users():
             for user in users:
@@ -201,6 +223,7 @@ class ApiDemo:
 
     # 演示类方法调用
     @classmethod
+    @apiconfig(allow_anonymous=True)
     def class_method(cls, name):
         """
         类方法调用测试
@@ -210,6 +233,7 @@ class ApiDemo:
         return {'name': name}
 
     # 演示实例方法调用
+    @apiconfig(allow_anonymous=True)
     def instance_func(self, value):
         """
         实例方法调用测试
@@ -221,6 +245,7 @@ class ApiDemo:
 
     # 演示错误的函数写法
     @staticmethod
+    @apiconfig(allow_anonymous=True)
     def err_func(self):
         """
         模拟错误的函数写法：声明为静态方法，却还存在参数self
@@ -232,6 +257,7 @@ class ApiDemo:
 
     # 演示接口接收任意k/w参数
     @staticmethod
+    @apiconfig(allow_anonymous=True)
     def send_kwargs(value: str, **kwargs):
         """
         VAR_KEYWORD 参数类型的传值测试，传入任意k/w，会在调用结果中返回
@@ -243,6 +269,7 @@ class ApiDemo:
 
     # json 转 dict
     @staticmethod
+    @apiconfig(allow_anonymous=True)
     def json_to_dict(user: Dict):
         return user
 

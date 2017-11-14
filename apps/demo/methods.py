@@ -38,6 +38,8 @@ class DemoApiMethods(ApiMethodsBase):
         'matrix.api.after-custom-error': {'func': after_custom_error},
         # 保留原始返回格式
         'matrix.api.raw_response': {'func': raw_data},
+        # 不允许匿名访问
+        'matrix.api.not_allowed_anonymous': {'func': not_allowed_anonymous},
         # 只允许GET请求
         'matrix.api.only-get': {'func': first_api, 'methods': ['get']},
         # 只允许POST请求

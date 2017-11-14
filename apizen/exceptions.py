@@ -114,6 +114,9 @@ class ApiSysExceptions:
     unacceptable_content_type = SysException(err_code=1024, http_code=400, err_msg='不被接受的Content-Type', err_type=Exception)
     # 无效的请求
     bad_request = SysException(err_code=1025, http_code=400, err_msg='无效的请求', err_type=Exception)
+    # 不允许匿名访问
+    not_allowed_allow_anonymous = SysException(err_code=1026, http_code=400, err_msg='不允许匿名访问', err_type=Exception)
+
 
 if __name__ == '__main__':
     pass

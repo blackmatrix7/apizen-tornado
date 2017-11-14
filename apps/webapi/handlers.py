@@ -107,6 +107,8 @@ class ApiBaseHandler(SysBaseHandler):
         self.api_msg = '执行成功'
         self.http_code = 200
         self.err_type = None
+        # 接口处理函数
+        self.api_func = None
         SysBaseHandler.__init__(self, application, request, **kwargs)
 
     def write(self, chunk):
@@ -213,6 +215,12 @@ class WebApiRoute(ApiBaseHandler):
         self._v = self.get_argument('v')
         # 数据格式
         self._format = self.get_argument('format', 'json').lower()
+        # 获取接口处理函数，及接口部分配置
+        self.api_func = get_method(version=self._v, api_method=self._method, http_method=self.request.method)
+
+        # 默认不允许匿名访问
+        if getattr(self.api_func, '__allow_anonymous__', False) is False and self.get_current_user() is None:
+            raise ApiSysExceptions.not_allowed_allow_anonymous
 
         # 检查请求的格式
         if self._format not in ('json', 'xml'):
@@ -252,13 +260,17 @@ class WebApiRoute(ApiBaseHandler):
         if self.api_code != 1000:
             raise SysException(err_code=self.api_code, err_msg=self.api_msg, http_code=self.http_code, err_type=self.err_type)
         else:
-            resp = {
-                'meta': {
-                    'code': self.api_code,
-                    'message': self.api_msg
-                },
-                'response': self.result
-            }
+            # 默认不支持返回原始的数据格式
+            if getattr(self.api_func, '__rawresp__', False) is False:
+                resp = {
+                    'meta': {
+                        'code': self.api_code,
+                        'message': self.api_msg
+                    },
+                    'response': self.result
+                }
+            else:
+                resp = self.result
             self.set_header("Access-Control-Allow-Origin", "*")
             self.set_status(status_code=self.http_code)
             self.write(resp)

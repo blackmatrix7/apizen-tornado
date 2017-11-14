@@ -214,13 +214,21 @@ class ApiZenTestCase(unittest.TestCase):
         data = resp.json()
         assert data['meta']['message'] == '未知异常'
 
-    # # 测试保留原始返回结果
-    # def test_raw_data(self):
-    #     self.api_method = 'matrix.api.raw_response'
-    #     resp = requests.get(self.request_url)
-    #     assert resp.status_code == 200
-    #     data = resp.json()
-    #     assert data['message'] == '保留原始返回格式'
+    # 测试保留原始返回结果
+    def test_raw_data(self):
+        self.api_method = 'matrix.api.raw_response'
+        resp = requests.get(self.request_url)
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data['message'] == '保留原始返回格式'
+
+    # 测试不允许匿名访问
+    def test_not_allowed_allow_anonymous(self):
+        self.api_method = 'matrix.api.not_allowed_anonymous'
+        resp = requests.get(self.request_url)
+        assert resp.status_code == 400
+        data = resp.json()
+        assert data['meta']['message'] == '不允许匿名访问'
 
     # 测试只允许get请求
     def test_only_get(self):
@@ -320,25 +328,6 @@ class ApiZenTestCase(unittest.TestCase):
         data = resp.json()
         assert data['meta']['message'] == '参数类型错误：value <Bool>'
 
-    # 测试接口版本禁用
-    def test_runtime_error(self):
-        self.api_method = 'matrix.api.runtime-error'
-        self.api_version = '1.0'
-        resp = requests.get(self.request_url)
-        assert resp.status_code == 500
-        data = resp.json()
-        assert data['meta']['code'] == 1017
-        self.api_version = '1.0'
-
-    # 测试新增文章
-    def test_new_article(self):
-        self.api_method = 'matrix.demo.articles.set'
-        self.api_version = '1.0'
-        playload = {'title': '测试文章标题', 'content': '测试文章内容'}
-        resp = requests.post(self.request_url, json=playload)
-        assert resp.status_code == 200
-        data = resp.json()
 
 if __name__ == '__main__':
-    tests = unittest.TestLoader().discover('test')
-    unittest.TextTestRunner(verbosity=2).run(tests)
+    pass
