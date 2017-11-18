@@ -219,7 +219,7 @@ class WebApiRoute(ApiBaseHandler):
         self.api_func = get_method(version=self._v, api_method=self._method, http_method=self.request.method)
 
         # 默认不允许匿名访问
-        if getattr(self.api_func, '__allow_anonymous__', False) is False and self.get_current_user() is None:
+        if getattr(self.api_func, '__allow_anonymous__', False) is False and self.current_user is None:
             raise ApiSysExceptions.not_allowed_allow_anonymous
 
         # 检查请求的格式
