@@ -330,12 +330,10 @@ class ApiZenTestCase(unittest.TestCase):
 
     # 测试新增数据
     def test_add_articles(self):
-        self.api_method = 'matrix.demo.article.set'
-        playload = {'value': 'True'}
-        resp = requests.post(self.request_url)
-        assert resp.status_code == 404
-        data = resp.json()
-        assert data['meta']['message'] == '不存在的方法名'
+        self.api_method = 'matrix.demo.articles.set'
+        playload = {'title': '测试文章标题', 'content': '测试文章内容'}
+        resp = requests.post(self.request_url, json=playload)
+        assert resp.status_code == 200
 
 
 if __name__ == '__main__':
