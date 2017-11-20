@@ -188,6 +188,17 @@ def new_logs(name, remark):
     return logs.to_dict()
 
 
+@apiconfig(allow_anonymous=True)
+def get_articles():
+    """
+    测试获取全部数据
+    :return:
+    """
+    from .models import Article
+    articles = Article.get_all()
+    return [article.to_dict() for article in articles]
+
+
 class ApiDemo:
 
     def __init__(self):

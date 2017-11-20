@@ -67,6 +67,10 @@ class ModelMixin:
     def get_by_id(cls, id_):
         return databases[cls.__database__]['db'].query(cls).filter(cls.id == int(id_)).first()
 
+    @classmethod
+    def get_all(cls):
+        return databases[cls.__database__]['db'].query(cls).all()
+
     def to_dict(self, columns=None):
         """
         将SQLALCHEMY MODEL 转换成 dict

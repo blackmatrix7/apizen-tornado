@@ -67,7 +67,9 @@ class DemoApiMethods(ApiMethodsBase):
         # 测试新增文章
         'matrix.demo.articles.set': {'func': new_article},
         # 测试新增文件
-        'matrix.demo.logs.set': {'func': new_logs}
+        'matrix.demo.logs.set': {'func': new_logs},
+        # 测试获取全部数据
+        'matrix.demo.articles.get': {'func': get_articles}
     }
 
 if __name__ == '__main__':

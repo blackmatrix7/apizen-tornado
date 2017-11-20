@@ -328,6 +328,15 @@ class ApiZenTestCase(unittest.TestCase):
         data = resp.json()
         assert data['meta']['message'] == '参数类型错误：value <Bool>'
 
+    # 测试新增数据
+    def test_add_articles(self):
+        self.api_method = 'matrix.demo.article.set'
+        playload = {'value': 'True'}
+        resp = requests.post(self.request_url)
+        assert resp.status_code == 404
+        data = resp.json()
+        assert data['meta']['message'] == '不存在的方法名'
+
 
 if __name__ == '__main__':
     pass
