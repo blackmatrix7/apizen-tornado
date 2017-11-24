@@ -184,6 +184,8 @@ class TypeMoney(TypeBase):
 
 class TypeModel(TypeBase):
 
+    typename = 'Sqlalchemy Model Dict'
+
     def __init__(self, model, columns=None):
         self.model = model
         self.columns = columns
