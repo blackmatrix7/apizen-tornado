@@ -247,7 +247,8 @@ class WebApiRoute(ApiBaseHandler):
 
         # 去除 method、v、_xsrf参数
         for key in ('method', 'v', '_xsrf'):
-            self.request_args.pop(key)
+            if hasattr(self.request_args, key):
+                self.request_args.pop(key)
 
     @tornado.web.asynchronous
     @tornado.gen.coroutine
