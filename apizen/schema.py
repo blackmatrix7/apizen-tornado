@@ -169,18 +169,6 @@ class TypeEmail(TypeString):
             raise ValueError
 
 
-class TypeModel(TypeBase):
-
-    def __init__(self, model):
-        self.model = model
-
-    def convert(self, *, value=None):
-        data = json.loads(value) if isinstance(value, str) else value
-        result = self.model(**{key: value for key, value in data.items() if key in self.model.__table__.columns})
-        result.raw_data = data
-        return result
-
-
 class TypeMoney(TypeBase):
 
     typename = 'Money'
@@ -194,6 +182,34 @@ class TypeMoney(TypeBase):
             raise ValueError
 
 
+class TypeModel(TypeBase):
+
+    def __init__(self, model):
+        self.model = model
+
+    def convert(self, *, value=None):
+        data = json.loads(value) if isinstance(value, str) else value
+        result = self.model(**{key: value for key, value in data.items() if key in self.model.__table__.columns})
+        result.raw_data = data
+        return result
+
+
+class TypeModelConditions(TypeBase):
+
+    typename = 'Conditions'
+
+    def __init__(self, model, ignore=(None,)):
+        self.model = model
+        self.ignore = ignore
+
+    def convert(self, *, value=None):
+        data = json.loads(value) if isinstance(value, str) else value
+        result = {key: value for key, value in data.items()
+                  if key in self.model.__table__.columns
+                  if value not in self.ignore}
+        return result
+
+
 Integer = TypeInteger()
 List = TypeList()
 Money = TypeMoney()
@@ -202,9 +218,10 @@ Float = TypeFloat()
 String = TypeString()
 Dict = TypeDict()
 Date = TypeDate
-Model = TypeModel
 DateTime = TypeDatetime
 Email = TypeEmail
+Model = TypeModel
+Conditions = TypeModelConditions
 
 
 def dict2model(data, model):

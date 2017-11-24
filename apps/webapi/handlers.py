@@ -182,6 +182,7 @@ class WebApiRoute(ApiBaseHandler):
                     else:
                         func_args[k] = convert(k, args.get(k), v.default, v.annotation)
                 elif str(v.kind) == 'VAR_KEYWORD':
+                    args = convert(k, args, v.default, v.annotation)
                     func_args.update({k: v for k, v in args.items()
                                       if k not in api_method_params.keys()})
             result = api_func(**func_args)
