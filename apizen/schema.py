@@ -203,7 +203,7 @@ class TypeModelConditions(TypeBase):
 
     def __init__(self, model, ignore_columns=None, ignore_values=(None,)):
         self.model = model
-        self.ignore_columns = ignore_columns
+        self.ignore_columns = ignore_columns or []
         self.ignore_values = ignore_values
 
     def convert(self, *, value=None):
