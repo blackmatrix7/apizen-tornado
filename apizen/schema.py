@@ -184,12 +184,13 @@ class TypeMoney(TypeBase):
 
 class TypeModel(TypeBase):
 
-    def __init__(self, model):
+    def __init__(self, model, columns=None):
         self.model = model
+        self.columns = columns
 
     def convert(self, *, value=None):
         data = json.loads(value) if isinstance(value, str) else value
-        result = self.model(**{key: value for key, value in data.items() if key in self.model.__table__.columns})
+        result = self.model(**{key: value for key, value in data.items() if key in self.columns or self.model.__table__.columns})
         result.raw_data = data
         return result
 
@@ -198,15 +199,16 @@ class TypeModelConditions(TypeBase):
 
     typename = 'Conditions'
 
-    def __init__(self, model, ignore=(None,)):
+    def __init__(self, model, ignore_columns=None, ignore_values=(None,)):
         self.model = model
-        self.ignore = ignore
+        self.ignore_columns = ignore_columns
+        self.ignore_values = ignore_values
 
     def convert(self, *, value=None):
         data = json.loads(value) if isinstance(value, str) else value
+        columns = [column for column in self.model.__table__.columns if column not in self.ignore_columns]
         result = {key: value for key, value in data.items()
-                  if key in self.model.__table__.columns
-                  if value not in self.ignore}
+                  if key in columns if value not in self.ignore_values}
         return result
 
 
