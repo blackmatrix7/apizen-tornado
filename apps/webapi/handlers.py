@@ -244,6 +244,10 @@ class WebApiRoute(ApiBaseHandler):
                 else:
                     raise ApiSysExceptions.invalid_json
 
+        # 去除 method、v、_xsrf参数
+        for key in ('method', 'v', '_xsrf'):
+            self.request_args.pop(key)
+
     @tornado.web.asynchronous
     @tornado.gen.coroutine
     def handler(self):
