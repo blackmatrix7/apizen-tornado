@@ -208,7 +208,7 @@ class TypeModelConditions(TypeBase):
 
     def convert(self, *, value=None):
         data = json.loads(value) if isinstance(value, str) else value
-        columns = [column for column in self.model.__table__.columns if column.name not in self.ignore_columns]
+        columns = [column.name for column in self.model.__table__.columns if column.name not in self.ignore_columns]
         result = {key: value for key, value in data.items()
                   if key in columns if value not in self.ignore_values}
         return result
