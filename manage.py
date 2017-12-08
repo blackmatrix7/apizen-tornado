@@ -11,12 +11,12 @@ from toolkit.router import Route
 from config import current_config
 from tornado.ioloop import IOLoop
 from toolkit.cmdline import cmdline
-from toolkit.apps import import_apps
 from apizen.manager import ApiZenManager
 from tornado.httpserver import HTTPServer
 from extensions import cache, celery, logger
 from tornsql.patching import monkey_patching
 from toolkit.session import MemcacheSessionStore
+from toolkit.apps import import_apps, apps_static_path
 
 # ApiZen初始化
 apizen = ApiZenManager(config=current_config)
@@ -28,15 +28,21 @@ monkey_patching()
 import_apps(current_config.IMPORT_APPS)
 
 # tornado 配置
+# 基础静态目录
+static_paths = {
+    'style': os.path.abspath('style'),
+    'static': os.path.abspath('static'),
+    'upload': os.path.abspath('upload'),
+}
+# APP加载的静态目录
+static_paths.update(apps_static_path(current_config.IMPORT_APPS))
+# 其他tornado配置
 torconf = {
-        'style_path': os.path.join(os.path.dirname(__file__), 'style'),
-        'static_path': os.path.join(os.path.dirname(__file__), 'static'),
-        'upload_path': os.path.join(os.path.dirname(__file__), 'upload'),
-        'cookie_secret': current_config.get('COOKIE_SECRET'),
-        'login_url': current_config.get('LOGIN_URL'),
-        "xsrf_cookies": True,
-        'autoescape': None
-    }
+    'cookie_secret': current_config.get('COOKIE_SECRET'),
+    'login_url': current_config.get('LOGIN_URL'),
+    "xsrf_cookies": current_config.get('XSRF', True),
+    'autoescape': None
+}
 
 
 class Application(tornado.web.Application):
@@ -47,13 +53,9 @@ class Application(tornado.web.Application):
         self.session_store = MemcacheSessionStore(cache)
 
         handlers = [
-                       tornado.web.url(r"/style/(.+)", tornado.web.StaticFileHandler,
-                                       dict(path=torconf['style_path']), name='style_path'),
-                       tornado.web.url(r"/static/(.+)", tornado.web.StaticFileHandler,
-                                       dict(path=torconf['static_path']), name='static_path'),
-                       tornado.web.url(r"/upload/(.+)", tornado.web.StaticFileHandler,
-                                       dict(path=torconf['upload_path']), name='upload_path')
-                   ] + Route.routes()
+            tornado.web.url('/{}/(.+)'.format(k), tornado.web.StaticFileHandler,
+                            {'path': static_paths[k]}, name=k) for k, v in static_paths.items()] + Route.routes()
+
         tornado.web.Application.__init__(self, handlers, **torconf)
 
 

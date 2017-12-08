@@ -6,6 +6,7 @@
 # @Blog : http://www.cnblogs.com/blackmatrix/
 # @File : apps.py
 # @Software: PyCharm
+import os
 import importlib
 
 __author__ = 'blackmatrix'
