@@ -25,5 +25,17 @@ def import_apps(apps):
         import_app_module(app, 'methods')
 
 
+def apps_static_path(apps):
+    static_paths = {}
+    for app in apps:
+        app_static_path = 'apps/{}/static'.format(app)
+        app_style_path = 'apps/{}/style'.format(app)
+        app_upload_path = 'apps/{}/upload'.format(app)
+        static_paths.update({'{}/static'.format(app): os.path.abspath(app_static_path)})
+        static_paths.update({'{}/style'.format(app): os.path.abspath(app_style_path)})
+        static_paths.update({'{}/upload'.format(app): os.path.abspath(app_upload_path)})
+    return static_paths
+
+
 if __name__ == '__main__':
     pass
